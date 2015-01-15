@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Export-Package: org.motechproject.mmnaija.service;uses:="org.motechpro
+ ject.mmnaija.domain";version="0.1.0.SNAPSHOT",org.motechproject.mmnai
+ ja.repository;uses:="org.motechproject.mds.annotations,org.motechproj
+ ect.mds.service,org.motechproject.mmnaija.domain";version="0.1.0.SNAP
+ SHOT",org.motechproject.mmnaija.domain;uses:="javax.jdo.annotations,o
+ rg.motechproject.mds.annotations,org.motechproject.messagecampaign.do
+ main.campaign";version="0.1.0.SNAPSHOT"
+Blueprint-Enabled: true
+Built-By: seth
+Tool: Bnd-1.43.0
+Bundle-Name: Mobile Midwife Nigeria
+Created-By: Apache Maven Bundle Plugin
+Context-File: META-INF/motech/applicationContext.xml
+Build-Jdk: 1.7.0_67
+Resource-Path: mmnaija/resources
+Bundle-Version: 0.1.0.SNAPSHOT
+Context-Path: mmnaija
+Bnd-LastModified: 1421318414949
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.motechproject.mmnaija
+Import-Package: javax.jdo.annotations;version="[3.0,4)",javax.mail,jav
+ ax.mail.internet,javax.servlet.http;version="[2.5,3)",org.apache.comm
+ ons.io;version="[1.4,2)",org.json,org.motechproject.event;version="[0
+ .25,1)",org.motechproject.event.listener.annotations;version="[0.25,1
+ )",org.motechproject.mds.annotations;version="[0.25,1)",org.motechpro
+ ject.mds.service;version="[0.25,1)",org.motechproject.messagecampaign
+ .dao;version="[0.25,1)",org.motechproject.messagecampaign.domain.camp
+ aign;version="[0.25,1)",org.motechproject.mmnaija.domain;version="[0.
+ 1,1)",org.motechproject.mmnaija.repository;version="[0.1,1)",org.mote
+ chproject.mmnaija.service;version="[0.1,1)",org.motechproject.osgi.we
+ b;version="[0.25,1)",org.slf4j;version="[1.7,2)",org.springframework.
+ beans.factory.annotation;version="[3.1,4)",org.springframework.stereo
+ type;version="[3.1,4)",org.springframework.web.bind.annotation;versio
+ n="[3.1,4)"
+

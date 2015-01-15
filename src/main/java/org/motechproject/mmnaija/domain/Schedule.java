@@ -17,9 +17,9 @@ import org.motechproject.mds.annotations.Field;
 public class Schedule {
 
     @Field
-    private Subscription subscription;
+    private String subscription;
     @Field 
-    private Message message;
+    private String message;
     @Field
     private String contentType;
     @Field(name = "delivery_date")
@@ -39,11 +39,13 @@ public class Schedule {
     private String call_retry;
     @Field(name = "call_duration")
     private String callDuration;
+    @Field
+    private String subscriber;
 
     /**
      * @return the subscription
      */
-    public Subscription getSubscription() {
+    public String getSubscription() {
         return subscription;
     }
 
@@ -51,13 +53,13 @@ public class Schedule {
      * @param subscription the subscription to set
      */
     public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
+        this.subscription = subscription.getEnrollment();
     }
 
     /**
      * @return the message
      */
-    public Message getMessage() {
+    public String getMessage() {
         return message;
     }
 
@@ -65,7 +67,7 @@ public class Schedule {
      * @param message the message to set
      */
     public void setMessage(Message message) {
-        this.message = message;
+        this.message = message.getMessageKey();
     }
 
     /**
@@ -167,8 +169,9 @@ public class Schedule {
     }
 
     public Schedule(Subscription subscription, Message message, Date deliveryDate, Date lastAttemptDate, int attempts, ScheduleStatus status, String callStatus, String call_retry, String callDuration) {
-        this.subscription = subscription;
-        this.message = message;
+        this.subscription = subscription.getEnrollment();
+        this.subscriber = subscription.getSubscriber();
+        this.message = message.getMessageKey();
         this.deliveryDate = deliveryDate;
         this.lastAttemptDate = lastAttemptDate;
         this.attempts = attempts;
@@ -193,6 +196,20 @@ public class Schedule {
      */
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    /**
+     * @return the subscriber
+     */
+    public String getSubscriber() {
+        return subscriber;
+    }
+
+    /**
+     * @param subscriber the subscriber to set
+     */
+    public void setSubscriber(String subscriber) {
+        this.subscriber = subscriber;
     }
     
     

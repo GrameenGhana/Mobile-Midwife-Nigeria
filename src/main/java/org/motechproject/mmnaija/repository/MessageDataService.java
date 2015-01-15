@@ -15,7 +15,9 @@ import org.motechproject.mmnaija.domain.Message;
  * @author seth
  */
 public interface MessageDataService extends MotechDataService<Message> {
-
+@Lookup
+    Message findByMessageKeyLanguageType(
+            @LookupField(name = "messageKey") String msgKey);
     @Lookup
     Message findByMessageKeyLanguageType(
             @LookupField(name = "messageKey") String msgKey,

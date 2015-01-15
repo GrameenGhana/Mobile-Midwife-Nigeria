@@ -18,7 +18,7 @@ public class Message {
     @Field(name = "message_key")
     private String messageKey;
     @Field(name = "content_id")
-    private int contentId;
+    private Integer contentId;
     @Field(name = "content_type")
     private String contentType;
 

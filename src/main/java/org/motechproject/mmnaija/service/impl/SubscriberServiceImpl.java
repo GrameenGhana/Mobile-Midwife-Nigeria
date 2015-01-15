@@ -7,9 +7,12 @@ package org.motechproject.mmnaija.service.impl;
 
 import java.util.List;
 import org.motechproject.mmnaija.domain.Language;
+import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Subscriber;
+import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.LanguageDataService;
 import org.motechproject.mmnaija.repository.SubscriberDataService;
+import org.motechproject.mmnaija.repository.SubscriptionDataService;
 import org.motechproject.mmnaija.service.SubscriberControllerService;
 import org.motechproject.mmnaija.service.SubscriberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Autowired
     private SubscriberDataService subscriberDataService;
+
+    @Autowired
+    private SubscriptionDataService subscriptionDataService;
+
     @Autowired
     private SubscriberControllerService subscriberControllerService;
     @Autowired
@@ -57,14 +64,35 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, String language, String campaignName, int start) {
-      return  createAndSubscribe(msisdn, gender, age, pregnant, languageService.findByIsoCode(language), campaignName, start);
+        return createAndSubscribe(msisdn, gender, age, pregnant, languageService.findByIsoCode(language), campaignName, start);
     }
 
     @Override
     public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, Language language, String campaignName, int start) {
         Subscriber subscriber = create(msisdn, gender, age, pregnant, language);
-        subscriberControllerService.addSubscription(subscriber, campaignName, start, "1");
+        subscriberControllerService.addSubscription(subscriber, campaignName, start);
         return subscriber;
+    }
+
+    @Override
+    public boolean subscribeUser(Subscriber subscriber, String campaignName, int start) {
+        return subscriberControllerService.addSubscription(subscriber, campaignName, start);
+    }
+
+    boolean deactivateSubscription(Subscription subscription) {
+
+        return (subscriberControllerService.unSubscribe(subscription));
+    }
+
+    @Override
+    public boolean unsubscribeUser(Subscription subscription) {
+
+        return deactivateSubscription(subscription);
+    }
+
+    @Override
+    public Subscription findActiveSubscription(Subscriber subscriber, MessageService msgService) {
+        return subscriptionDataService.findActiveSubscription(subscriber.getMsisdn(), msgService.getContentId(), org.motechproject.mmnaija.domain.Status.Active.toString());
     }
 
 }

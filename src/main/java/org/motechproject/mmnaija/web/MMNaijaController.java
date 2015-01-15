@@ -5,7 +5,14 @@
  */
 package org.motechproject.mmnaija.web;
 
+import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
+import org.motechproject.mmnaija.domain.MessageService;
+import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
+import org.motechproject.mmnaija.domain.Subscription;
+import org.motechproject.mmnaija.repository.ServiceDataService;
+import org.motechproject.mmnaija.repository.SubscriptionDataService;
 import org.motechproject.mmnaija.service.SubscriberService;
 import org.motechproject.mmnaija.web.util.MMConstants;
 import org.motechproject.mmnaija.web.util.MMNaijaUtil;
@@ -25,6 +32,14 @@ public class MMNaijaController {
 
     @Autowired
     private SubscriberService subscriberService;
+    @Autowired
+    private ServiceDataService messageService;
+
+    @RequestMapping("/status")
+    @ResponseBody
+    public String status() {
+        return MMConstants.MMNAIJA_OK;
+    }
 
     /**
      *
@@ -40,7 +55,7 @@ public class MMNaijaController {
      */
     @RequestMapping(value = "/web-api/v1/subscriber/register", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public String status(
+    public String registerSubscriber(
             @RequestParam(value = "msisdn") String msisdn,
             @RequestParam(value = "age") int age,
             @RequestParam(value = "gender") String maleOrFemale,
@@ -50,7 +65,7 @@ public class MMNaijaController {
             @RequestParam(value = "start_point") int start) {
 
         Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
-        System.out.println("Subscriber :"+subscriber);
+        System.out.println("Subscriber :" + subscriber);
 //        System.out.println("ID : "+subscriber.getMsisdn());
         //Check of subscriber is already registered
         if (null == subscriber) {
@@ -60,15 +75,58 @@ public class MMNaijaController {
                     ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
                     : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
         } else {
-            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_ALREADY_REGISTERED);
+            MessageService content = messageService.findServiceByContentId(Integer.parseInt(campaign));
+            Subscription subscription = subscriberService.findActiveSubscription(subscriber, content);
+            //not subscribed
+            if (null == subscription) {
+                //add subscription
+
+            } else {
+                //already subscribed
+                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_ALREADY_EXIST);
+
+            }
         }
+        return null;
 
     }
 
-    @RequestMapping("/web-api/subs")
+    /**
+     * For nsubscription users
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/web-api/v1/subscriber/unsubscribe", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public String createSubscription() {
-        return "MM Naija dey run";
+    public String unSubscribe(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+        Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
+
+        //check if subscriber exist
+        if (null == subscriber) {
+            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_NOT_FOUND_EXCEPTION);
+        } else {
+            //checking service
+            MessageService msgService = messageService.findServiceByContentId(Integer.parseInt(service));
+            if (null == msgService) {
+                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SERVICE_NOT_FOUND_EXCEPTION);
+
+            } else {
+                //Checking subscription
+                Subscription subscriptions = subscriberService.findActiveSubscription(subscriber, msgService);
+                if (null == subscriptions) {
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_NOT_FOUND_EXCEPTION);
+                } else {
+                    //Unsibscribe users
+                    subscriberService.unsubscribeUser(subscriptions);
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
+                }
+            }
+
+        }
+//        return "MM Naija dey run";
     }
 
     @RequestMapping("/web-api/mmnaija")

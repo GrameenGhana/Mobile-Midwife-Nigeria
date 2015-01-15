@@ -18,7 +18,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
+import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.Schedule;
+import org.motechproject.mmnaija.domain.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +53,12 @@ FROM message;
         return sendSimpleMail(msisdn, message, "SMS");
     }
 
-    public static String sendSMS(Schedule schedule) {
-        return sendSMS(schedule.getSubscription().getSubscriber().getMsisdn(), schedule.getMessage().getMessageKey());
+    public static String sendSMS(Schedule schedule,Message msg) {
+        return sendSMS(schedule.getSubscriber(), msg.getMessageKey());
     }
 
-    public static String sendVoice(Schedule schedule) {
-        return sendVoice(schedule.getSubscription().getSubscriber().getMsisdn(), schedule.getMessage().getMessageKey());
+    public static String sendVoice(Schedule schedule,Message msg) {
+        return sendVoice(schedule.getSubscriber(), msg.getMessageKey());
     }
 
     public static String sendVoice(String msisdn, String messageKey) {

@@ -22,10 +22,12 @@ public interface ServiceDataService extends MotechDataService<MessageService> {
     MessageService findServiceByContentId(@LookupField(name = "contentId") Integer contentId);
 
     @Lookup
+    MessageService findServiceBySkey(@LookupField(name = "skey") String skey);
+
+    @Lookup
     List<MessageService> findActiveServices(@LookupField(name = "status") Status status);
 
-    
-      @Lookup
+    @Lookup
     MessageService findServiceByName(@LookupField(name = "name") String name);
 
 }

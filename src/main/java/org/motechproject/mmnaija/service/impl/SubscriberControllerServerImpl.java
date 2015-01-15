@@ -8,6 +8,7 @@ package org.motechproject.mmnaija.service.impl;
 import java.util.Date;
 import org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollment;
+import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.ServiceDataService;
@@ -40,9 +41,10 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         CampaignEnrollment enrolment = enrollmentService.create(new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey()));
         if (null != enrolment) {
             System.out.println("Start Point");
-            start =getSMSStartPoint(service, start);
-            System.out.println("End start point : "+start);
+            start = getSMSStartPoint(service, start);
+            System.out.println("End start point : " + start);
             Subscription subscription = new Subscription(sub, service, start, start, status, new Date(), enrolment);
+            subscriptionDataService.create(subscription);
 //          new Subscription(sub, service, start, currentPoint, status, new Date(), enrolment), status, null, enrolment);
             return true;
         }
@@ -73,6 +75,26 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     @Override
     public Subscriber updateSubscription() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addSubscription(Subscriber sub, String campaign, int start) {
+        //Set default status to active
+        return addSubscription(sub, campaign, start, Status.Active.toString());
+    }
+
+    @Override
+    public boolean unSubscribe(Subscription subscription) {
+        if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
+            //Already unsubsribed
+            return false;
+        }
+
+        subscription.setEndDate(new Date());
+        subscription.setStatus(Status.InActive.toString());
+        subscriptionDataService.update(subscription);
+        return true;
+
     }
 
 }

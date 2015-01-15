@@ -12,26 +12,34 @@ import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.Schedule;
 import org.motechproject.mmnaija.domain.ScheduleStatus;
 import org.motechproject.mmnaija.domain.Subscription;
+import org.motechproject.mmnaija.repository.MessageDataService;
 import org.motechproject.mmnaija.repository.ScheduleDataService;
 import org.motechproject.mmnaija.service.ScheduleService;
 import org.motechproject.mmnaija.web.util.HTTPCommunicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author seth
  */
+@Service("scheduleService")
 public class ScheduleServiceImpl implements ScheduleService {
 
     static int NUMBER_OF_SCHEDULES = 5;
     @Autowired
     ScheduleDataService scheduleDataService;
 
+    @Autowired
+    MessageDataService msgDataService;
+
+//    @Autowired
     @Override
     public Schedule add(Schedule schedule) {
         schedule.setLastAttemptDate(new Date());
         schedule.setAttempts(0);
-        schedule.setContentType(schedule.getMessage().getContentType());
+        Message msg = msgDataService.findByMessageKeyLanguageType(schedule.getMessage());
+        schedule.setContentType(msg.getContentType());
         return scheduleDataService.create(schedule);
     }
 
@@ -100,8 +108,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.setStatus(ScheduleStatus.PROCESSING);
                 schedule.setAttempts(schedule.getAttempts() + 1);
                 update(schedule);
-
-                String response = HTTPCommunicator.sendVoice(schedule);
+                Message msg = msgDataService.findByMessageKeyLanguageType(schedule.getMessage());
+                String response = HTTPCommunicator.sendVoice(schedule, msg);
                 if (response.equalsIgnoreCase("00")) {
                     schedule.setStatus(ScheduleStatus.SENT);
                 } else {
@@ -123,7 +131,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.setAttempts(schedule.getAttempts() + 1);
                 update(schedule);
 
-                String response = HTTPCommunicator.sendSMS(schedule);
+                Message msg = msgDataService.findByMessageKeyLanguageType(schedule.getMessage());
+                String response = HTTPCommunicator.sendSMS(schedule, msg);
                 if (response.equalsIgnoreCase("00")) {
                     schedule.setStatus(ScheduleStatus.SENT);
                 } else {

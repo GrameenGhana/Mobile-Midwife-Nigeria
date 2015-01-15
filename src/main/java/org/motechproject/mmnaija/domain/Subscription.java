@@ -29,48 +29,49 @@ public class Subscription {
     @Field(name = "end_date")
     private Date endDate;
     @Field(name = "service_id")
-    MessageService service;
+    Integer service;
     @Field
-    Subscriber subscriber;
+    String subscriber;
     @Field
     private String enrollment;
 
-    public MessageService getService() {
+  
+    public Integer getService() {
         return service;
     }
 
-    public void setService(MessageService service) {
+    public void setService(Integer service) {
         this.service = service;
     }
 
-    public Subscriber getSubscriber() {
+    public String getSubscriber() {
         return subscriber;
     }
 
     public void setSubscriber(Subscriber subscriber) {
-        this.subscriber = subscriber;
+        this.subscriber = subscriber.getMsisdn();
     }
 
     public Subscription(Subscriber subscriber, MessageService service, int startPoint, int currentPoint, String status, Date startDate, Date endDate, CampaignEnrollment enrollment) {
-        this.subscriber = subscriber;
+        this.subscriber = subscriber.getMsisdn();
         this.startPoint = startPoint;
         this.currentPoint = currentPoint;
         this.status = status;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.service = service;
+        this.service = service.getContentId();
         this.enrollment = enrollment.getExternalId();
     }
 
     public Subscription(Subscriber subscriber, MessageService service, int startPoint, int currentPoint, String status, Date startDate, CampaignEnrollment enrollment) {
-        this.subscriber = subscriber;
+        this.subscriber = subscriber.getMsisdn();
         this.startPoint = startPoint;
         this.currentPoint = currentPoint;
         this.status = status;
         this.startDate = startDate;
 
         this.enrollment = enrollment.getExternalId();
-        this.service = service;
+        this.service = service.getContentId();
     }
 
     /**
