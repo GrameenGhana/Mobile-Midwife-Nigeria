@@ -10,6 +10,6 @@ package org.motechproject.mmnaija.osgi;
  *
  * @author seth
  */
-public class ScheduleServiceIT {
+public class ScheduleServiceTest {
     
 }

@@ -25,5 +25,12 @@ public interface SubscriberControllerService {
 
     boolean unSubscribe(Subscription subscription);
 
+    boolean pauseSubscription(Subscription subscription);
+
+    boolean resumeSubscription(Subscription subscription);
+
+    boolean completeSubscription(Subscription subscription);
+    boolean reactivateSubscription(Subscription subscription);
+
     Subscriber updateSubscription();
 }

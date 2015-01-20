@@ -95,6 +95,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         return subscriptionDataService.findActiveSubscription(subscriber.getMsisdn(), msgService.getContentId(), org.motechproject.mmnaija.domain.Status.Active.toString());
     }
 
+    public Subscription findSubscription(Subscriber subscriber, MessageService msgService) {
+        return subscriptionDataService.findSubscription(subscriber.getMsisdn(), msgService.getContentId());
+    }
+
     @Override
     public boolean deleteAll() {
         subscriberDataService.deleteAll();
@@ -103,8 +107,28 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public boolean delete(Subscriber subcriber) {
-subscriberDataService.delete(subcriber);
-return true;
+        subscriberDataService.delete(subcriber);
+        return true;
+    }
+
+    @Override
+    public boolean pauseSubscribeUser(Subscription subscription) {
+        return subscriberControllerService.pauseSubscription(subscription);
+    }
+
+    @Override
+    public boolean resumeSubscribeUser(Subscription subscription) {
+        return subscriberControllerService.resumeSubscription(subscription);
+    }
+
+    @Override
+    public boolean completeSubscribeUser(Subscription subscription) {
+        return subscriberControllerService.completeSubscription(subscription);
+    }
+
+    @Override
+    public boolean reactivateSubscribe(Subscription subscription) {
+        return subscriberControllerService.reactivateSubscription(subscription);
     }
 
 }

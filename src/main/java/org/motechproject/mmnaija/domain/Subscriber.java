@@ -9,13 +9,14 @@ import java.io.Serializable;
 import javax.jdo.annotations.Unique;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
+import org.motechproject.mds.domain.MdsEntity;
 
 /**
  *
  * @author seth
  */
 @Entity
-public class Subscriber implements Serializable {
+public class Subscriber  extends MdsEntity implements Serializable {
 
     @Field
 //    @Unique

@@ -17,10 +17,10 @@ import org.junit.runners.Suite;
  * @author seth
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SubscriberControllerServiceIT.class,
-    SubscriberServiceIT.class,
+@Suite.SuiteClasses({SubscriberControllerServiceTest.class,
+    SubscriberServiceTest.class,
     MMNaijaControllerTest.class})
-public class MMNaijaTestSuite {
+public class MMNaijaSuiteTest {
 
     public static final int BUNDLE_MS_WAIT_TIME = 1000;
 

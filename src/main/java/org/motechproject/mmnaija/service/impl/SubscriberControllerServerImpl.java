@@ -9,6 +9,8 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 import org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollment;
+import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollmentStatus;
+import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
@@ -40,6 +42,7 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         org.motechproject.mmnaija.domain.MessageService service = serviceDataService.findServiceByContentId(Integer.parseInt(campaign));
 
         CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey());
+
         enr.setReferenceDate(new LocalDate());
         CampaignEnrollment enrolment = enrollmentService.create(enr);
         if (null != enrolment) {
@@ -54,17 +57,26 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         return false;
     }
 
+    public CampaignEnrollment enrollSubscriber(Subscription subscription, String campaign, Date refDate) {
+        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(subscription.getSubscriber()), campaign);
+
+        enr.setReferenceDate(new LocalDate(refDate));
+        return enr;
+    }
+
     @Override
     public int getSMSStartPoint(org.motechproject.mmnaija.domain.MessageService service, int startService) {
-
+        System.out.println("From :" + service.getContentId());
 //        int startService=0;
         if (service.getContentId() == 4) {
             startService = (5 * startService) - 4;// taking into account SMS goes 5 times a week.
         } else {
             startService = (5 * (startService - 4)) - 4;// taking into account SMS goes 5 times a week and pregnancy content starts at week 5.
         }
-        int 
-        smsStartPoint = (startService < service.getMinEntryPoint()) ? service.getMinEntryPoint() : startService;
+        System.out.println("Serive :" + service.getMaxEntryPoint());
+        System.out.println("Serive 3:" + service.getMinEntryPoint());
+
+        int smsStartPoint = (startService < service.getMinEntryPoint()) ? service.getMinEntryPoint() : startService;
         smsStartPoint = (startService > service.getMaxEntryPoint()) ? service.getMaxEntryPoint() : startService;
 
         return smsStartPoint;
@@ -94,11 +106,72 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
             return false;
         }
 
+        MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
         subscription.setEndDate(new Date());
         subscription.setStatus(Status.InActive.toString());
+        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
+        enrollmentService.delete(enroll);
         subscriptionDataService.update(subscription);
         return true;
 
     }
 
+    public boolean pauseSubscription(Subscription subscription) {
+        if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
+            //Already unsubsribed
+            return false;
+        }
+
+        MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
+//        subscription.setEndDate(new Date());
+        subscription.setStatus(Status.Paused.toString());
+        System.out.println("Subscriotion : " + subscription.getSubscriber());
+        System.out.println("Msg : " + messageSer.getSkey());
+        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
+        enroll.setStatus(CampaignEnrollmentStatus.INACTIVE);
+        enrollmentService.update(enroll);
+        subscriptionDataService.update(subscription);
+        return true;
+
+    }
+
+    public boolean resumeSubscription(Subscription subscription) {
+        if (!subscription.getStatus().equalsIgnoreCase(Status.Paused.toString())) {
+            //Already unsubsribed
+            return false;
+        }
+        MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
+        subscription.setStatus(Status.Active.toString());
+        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
+        enroll.setStatus(CampaignEnrollmentStatus.ACTIVE);
+        enrollmentService.update(enroll);
+        subscriptionDataService.update(subscription);
+        return true;
+    }
+
+    public boolean completeSubscription(Subscription subscription) {
+        if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
+            //Already unsubsribed
+            return false;
+        }
+
+        MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
+//        subscription.setEndDate(new Date());
+        subscription.setStatus(Status.Completed.toString());
+        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
+        enroll.setStatus(CampaignEnrollmentStatus.COMPLETED);
+        enrollmentService.update(enroll);
+        subscriptionDataService.update(subscription);
+        return true;
+
+    }
+
+    @Override
+    public boolean reactivateSubscription(Subscription subscription) {
+
+        MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
+
+        return null != enrollSubscriber(subscription, messageSer.getSkey(), new Date());
+
+    }
 }

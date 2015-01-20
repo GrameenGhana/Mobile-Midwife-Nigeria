@@ -5,15 +5,18 @@
  */
 package org.motechproject.mmnaija.event;
 
+import java.util.Map;
 import org.motechproject.event.MotechEvent;
 import org.motechproject.event.listener.annotations.MotechListener;
 import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.Message;
+import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.MessageDataService;
 import org.motechproject.mmnaija.repository.ServiceDataService;
 import org.motechproject.mmnaija.repository.SubscriptionDataService;
 import org.motechproject.mmnaija.service.ScheduleService;
+import org.motechproject.mmnaija.service.SubscriberService;
 import org.motechproject.mmnaija.web.util.MMConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,44 +29,59 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MessageSentEventHandler {
-
+    
     @Autowired
     private SubscriptionDataService dataService;
-
     @Autowired
-    private MessageDataService msgService;
+    SubscriberService subscriberService;
+    
+    @Autowired
+    private MessageDataService msgService;    
+    
+    @Autowired
+    private ServiceDataService serviceDate;
     @Autowired
     ServiceDataService messageServiceataService;
-
     @Autowired
     ScheduleService scheduleService;
     private static final Logger log = LoggerFactory.getLogger(MessageSentEventHandler.class);
-
+    
     @MotechListener(subjects = {EventKeys.SEND_MESSAGE})
     public void handleAfterMsgSent(MotechEvent event) {
         String campaignKey = (String) event.getParameters().get(EventKeys.CAMPAIGN_NAME_KEY);
         if (validateMMNaijaMsgKey(campaignKey)) {
-
+            
             String msgKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
             String jobId = (String) event.getParameters().get(EventKeys.SCHEDULE_JOB_ID_KEY);
             String externalId = (String) event.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
-
-            Subscription subscription = dataService.findRecordByEnrollment(externalId);
+            
+            MessageService msr = serviceDate.findServiceBySkey(campaignKey);
+            Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
             Message msg = msgService.findByMessageKeyLanguageType(msgKey);
             scheduleService.playMessage(subscription, msg);
         } else {
             log.warn("Not HandledHer :" + campaignKey);
         }
     }
-
+    
     @MotechListener(subjects = {EventKeys.CAMPAIGN_COMPLETED})
     public void processCompletedCampaignEvent(MotechEvent event) {
+        
+        if (event.getParameters().get("CampaignName").toString().startsWith("mmnaija")) {
+            log.info("Handling CAMPAIGN_COMPLETED event {}: message={} from campaign={} for externalId={}", event.getSubject(),
+                    event.getParameters().get("MessageKey"), event.getParameters().get("CampaignName"), event.getParameters().get("ExternalID"));
+            Map<String, Object> parametersMap = event.getParameters();
+            String clientId = (String) parametersMap.get("ExternalID");
+            String campaign = (String) parametersMap.get("CampaignName");
+            MessageService msr = serviceDate.findServiceBySkey(campaign);
+            
+            Subscription s = dataService.findRecordByEnrollmentService(clientId, msr.getContentId());            
+            subscriberService.completeSubscribeUser(s);
+            
+        }
     }
-
+    
     public boolean validateMMNaijaMsgKey(String campaignKey) {
-        return (campaignKey.equalsIgnoreCase(MMConstants.CAMPAIGN_CHILD_SMS)
-                || campaignKey.equalsIgnoreCase(MMConstants.CAMPAIGN_CHILD)
-                || campaignKey.equalsIgnoreCase(MMConstants.CAMPAIGN_PREGNANCY)
-                || campaignKey.contains(MMConstants.CAMPAIGN_PREGNANCIES));
+        return (campaignKey.startsWith("mmnaija") && !campaignKey.contains("_SMS"));
     }
 }

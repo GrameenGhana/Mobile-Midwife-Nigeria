@@ -28,5 +28,14 @@ public class MMConstants {
     public static String SUBSCRIPTION_NOT_FOUND_EXCEPTION = "Subscription not existing";
     public static String SUBSCRIPTION_ALREADY_EXIST = "Subscription already exist";
     public static String UNSUBSCRIPTION_SUCCESSFUL = "Unsubscription Successful";
+    public static String UNSUBSCRIPTION_FAIL = "Unable to unsubscribe";
+    public static String PAUSE_SUCCESSFUL = "Pause Subscription Success";    
+    public static String PAUSE_FAILED = "Failed toPause";
+
+    public static String COMPLETED_SUCCESSFUL = "Complete Subscription";
+    public static String RESUME_SUCCESSFUL = "Resume Subscription Successful";
+    public static String RESUME_FAILED = "Resume Failed";
+    public static String REACTIVATION_SUCCESSFUL = "Reactivating Successful";
+    public static String REACTIVATION_FAILED = "Unable to reactivate";
 
 }

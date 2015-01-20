@@ -13,5 +13,7 @@ package org.motechproject.mmnaija.domain;
 public enum Status {
     
     Active,
-    InActive
+    InActive,
+    Completed,
+    Paused
 }

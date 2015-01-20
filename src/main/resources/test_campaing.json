@@ -1,74 +1,224 @@
 [
     {
-        "name": "pregnancy_tester_SMS",
+        "name": "mmnaija_test_SMS",
         "type": "DAY_OF_WEEK",
         "maxDuration": "2 weeks",
         "messages": [
             {
-                "name": "mmsms_1",
+                "name": "sms_1",
                 "formats": [
                     "SMS"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_1",
-                "repeatOn": ["Monday", "Tuesday"],
-                "startTime": "15:15"
+                "messageKey": "sms_1",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "14:50"
             },
-            {
-                "name": "mmsms_2",
+             {
+                "name": "sms_2",
                 "formats": [
                     "SMS"
                 ],
                 "languages": [
                     "en"
-                    
                 ],
-                "messageKey": "mmsms_2",
-                "repeatOn": ["Monday", "Tuesday"],
-                "startTime": "12:15"
+                "messageKey": "sms_2",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "14:45"
             },
-            {
-                "name": "mmsms_3",
+             {
+                "name": "sms_3",
                 "formats": [
                     "SMS"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_3",
-                "repeatOn": ["Monday", "Tuesday"],
-                "startTime": "15:35"
-            }
-            ,
-            {
-                "name": "mmsms_4",
+                "messageKey": "sms_3",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:00"
+            },
+             {
+                "name": "sms_4",
                 "formats": [
                     "SMS"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_4",
-                "repeatOn": ["Monday", "Tuesday"],
-                "startTime": "15:45"
-            }
-            ,
-            {
-                "name": "mmsms_5",
+                "messageKey": "sms_4",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:10"
+            },
+             {
+                "name": "sms_5",
                 "formats": [
                     "SMS"
                 ],
                 "languages": [
                     "en"
-                  
                 ],
-                "messageKey": "mmsms_5",
-                "repeatOn": ["Monday", "Tuesday"],
-                "startTime": "16:00"
+                "messageKey": "sms_5",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:40"
+            },
+             {
+                "name": "sms_6",
+                "formats": [
+                    "SMS"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "sms_6",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:55"
+            },
+             {
+                "name": "sms_7",
+                "formats": [
+                    "SMS"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "sms_7",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "16:05"
             }
-           
         ]
-    }
-]
+    },{
+        "name": "mmnaija_test_IVR",
+        "type": "DAY_OF_WEEK",
+        "maxDuration": "2 weeks",
+        "messages": [
+            {
+                "name": "ivr_1",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_1",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "14:50"
+            },
+             {
+                "name": "ivr_2",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_2",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "14:45"
+            },
+             {
+                "name": "ivr_3",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_3",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:00"
+            },
+             {
+                "name": "ivr_4",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_4",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:10"
+            },
+             {
+                "name": "ivr_5",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_5",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:40"
+            },
+             {
+                "name": "ivr_6",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_6",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "15:55"
+            },
+             {
+                "name": "ivr_7",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "ivr_7",
+                "repeatOn": [
+                    "Monday",
+                    "Tuesday"
+                ],
+                "startTime": "16:05"
+            }
+        ]
+    }]

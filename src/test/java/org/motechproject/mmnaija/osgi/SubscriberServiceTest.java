@@ -31,7 +31,7 @@ import org.ops4j.pax.exam.spi.reactors.PerSuite;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 @ExamFactory(MotechNativeTestContainerFactory.class)
-public class SubscriberServiceIT extends BasePaxIT {
+public class SubscriberServiceTest extends BasePaxIT {
 
     @Inject
     SubscriberService subscriberService;
@@ -46,8 +46,8 @@ public class SubscriberServiceIT extends BasePaxIT {
     @Before
     public void waitForBeans() {
         try {
-            Thread.sleep(MMNaijaTestSuite.BUNDLE_MS_WAIT_TIME);
-        } catch (InterruptedException e) {
+            Thread.sleep(MMNaijaSuiteTest.BUNDLE_MS_WAIT_TIME);
+        } catch (Exception e) {
         }
     }
 

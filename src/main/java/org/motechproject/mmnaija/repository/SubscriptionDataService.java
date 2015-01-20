@@ -21,6 +21,8 @@ public interface SubscriptionDataService extends MotechDataService<Subscription>
 
     @Lookup
     Subscription findRecordByEnrollment(@LookupField(name = "enrollment") String externalId);
+@Lookup
+    Subscription findRecordByEnrollmentService(@LookupField(name = "enrollment") String externalId,@LookupField(name = "service") Integer service);
 
     @Lookup
     public Subscription findActiveSubscription(
@@ -28,6 +30,11 @@ public interface SubscriptionDataService extends MotechDataService<Subscription>
             @LookupField(name = "service") Integer messageService,
             @LookupField(name = "status") String status);
 
+    
+    @Lookup
+    public Subscription findSubscription(
+            @LookupField(name = "subscriber") String subscriber,
+            @LookupField(name = "service") Integer messageService);
     @Lookup
     List<Subscription> findRecordBySubscriber(
             @LookupField(name = "subscriber") String subscriber,
