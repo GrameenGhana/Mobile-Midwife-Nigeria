@@ -34,5 +34,10 @@ public interface SubscriberService {
     Subscriber findRecordByMsisdn(String msisdn);
 
     List<Subscriber> getRecords();
+    
+    boolean deleteAll();
 
+    
+    
+    boolean delete(Subscriber subcriber);
 }

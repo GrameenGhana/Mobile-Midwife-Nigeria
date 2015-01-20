@@ -146,4 +146,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @Override
+    public Schedule playMessage(Subscription sub, Message msg) {
+        Schedule sch = create(sub, msg, ScheduleStatus.PENDING);
+        scheduledRequest();
+        return sch;
+    }
+
 }

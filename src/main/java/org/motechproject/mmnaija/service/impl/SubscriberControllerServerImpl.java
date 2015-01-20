@@ -6,6 +6,7 @@
 package org.motechproject.mmnaija.service.impl;
 
 import java.util.Date;
+import org.joda.time.LocalDate;
 import org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollment;
 import org.motechproject.mmnaija.domain.Status;
@@ -38,7 +39,9 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     public boolean addSubscription(Subscriber sub, String campaign, int start, String status) {
         org.motechproject.mmnaija.domain.MessageService service = serviceDataService.findServiceByContentId(Integer.parseInt(campaign));
 
-        CampaignEnrollment enrolment = enrollmentService.create(new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey()));
+        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey());
+        enr.setReferenceDate(new LocalDate());
+        CampaignEnrollment enrolment = enrollmentService.create(enr);
         if (null != enrolment) {
             System.out.println("Start Point");
             start = getSMSStartPoint(service, start);
@@ -60,7 +63,8 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         } else {
             startService = (5 * (startService - 4)) - 4;// taking into account SMS goes 5 times a week and pregnancy content starts at week 5.
         }
-        int smsStartPoint = (startService < service.getMinEntryPoint()) ? service.getMinEntryPoint() : startService;
+        int 
+        smsStartPoint = (startService < service.getMinEntryPoint()) ? service.getMinEntryPoint() : startService;
         smsStartPoint = (startService > service.getMaxEntryPoint()) ? service.getMaxEntryPoint() : startService;
 
         return smsStartPoint;

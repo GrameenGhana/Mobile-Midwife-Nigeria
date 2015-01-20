@@ -70,7 +70,7 @@ public class Subscription {
         this.status = status;
         this.startDate = startDate;
 
-        this.enrollment = enrollment.getExternalId();
+        this.enrollment = String.valueOf(enrollment.getId());
         this.service = service.getContentId();
     }
 

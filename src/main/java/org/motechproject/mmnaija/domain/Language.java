@@ -24,6 +24,12 @@ public class Language   {
     @Unique
     private String isoCode;
 
+    public Language(String name, String isoCode) {
+        this.name = name;
+        this.isoCode = isoCode;
+    }
+
+    
     /**
      * @return the name
      */

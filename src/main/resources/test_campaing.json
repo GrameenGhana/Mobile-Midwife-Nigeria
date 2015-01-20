@@ -13,10 +13,7 @@
                     "en"
                 ],
                 "messageKey": "mmsms_1",
-                "repeatOn": [
-                    "Monday",
-                    "Tuesday"
-                ],
+                "repeatOn": ["Monday", "Tuesday"],
                 "startTime": "15:15"
             },
             {
@@ -26,12 +23,10 @@
                 ],
                 "languages": [
                     "en"
+                    
                 ],
                 "messageKey": "mmsms_2",
-                "repeatOn": [
-                    "Monday",
-                    "Tuesday"
-                ],
+                "repeatOn": ["Monday", "Tuesday"],
                 "startTime": "12:15"
             },
             {
@@ -43,12 +38,10 @@
                     "en"
                 ],
                 "messageKey": "mmsms_3",
-                "repeatOn": [
-                    "Monday",
-                    "Tuesday"
-                ],
+                "repeatOn": ["Monday", "Tuesday"],
                 "startTime": "15:35"
-            },
+            }
+            ,
             {
                 "name": "mmsms_4",
                 "formats": [
@@ -58,12 +51,10 @@
                     "en"
                 ],
                 "messageKey": "mmsms_4",
-                "repeatOn": [
-                    "Monday",
-                    "Tuesday"
-                ],
+                "repeatOn": ["Monday", "Tuesday"],
                 "startTime": "15:45"
-            },
+            }
+            ,
             {
                 "name": "mmsms_5",
                 "formats": [
@@ -71,14 +62,13 @@
                 ],
                 "languages": [
                     "en"
+                  
                 ],
                 "messageKey": "mmsms_5",
-                "repeatOn": [
-                    "Monday",
-                    "Tuesday"
-                ],
+                "repeatOn": ["Monday", "Tuesday"],
                 "startTime": "16:00"
             }
+           
         ]
     }
 ]

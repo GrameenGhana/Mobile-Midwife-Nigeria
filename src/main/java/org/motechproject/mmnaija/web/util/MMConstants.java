@@ -19,6 +19,7 @@ public class MMConstants {
 
     public static String CAMPAIGN_PREGNANCY = "pregnancy";
     public static String CAMPAIGN_PREGNANCY_SMS = "pregnancy_sms";
+    public static String CAMPAIGN_PREGNANCIES = "pregnancy_";
     public static String CAMPAIGN_CHILD = "child";
     public static String CAMPAIGN_CHILD_SMS = "child_sms";
 

@@ -95,4 +95,16 @@ public class SubscriberServiceImpl implements SubscriberService {
         return subscriptionDataService.findActiveSubscription(subscriber.getMsisdn(), msgService.getContentId(), org.motechproject.mmnaija.domain.Status.Active.toString());
     }
 
+    @Override
+    public boolean deleteAll() {
+        subscriberDataService.deleteAll();
+        return true;
+    }
+
+    @Override
+    public boolean delete(Subscriber subcriber) {
+subscriberDataService.delete(subcriber);
+return true;
+    }
+
 }

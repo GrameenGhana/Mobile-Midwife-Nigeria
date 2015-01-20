@@ -63,7 +63,7 @@ public class MMNaijaController {
             @RequestParam(value = "pregnant") int preg,
             @RequestParam(value = "service") String campaign,
             @RequestParam(value = "start_point") int start) {
-
+///msisdn=233277143521&age=28&gender=m&language=en&pregnant=1&service=1&start_point=1
         Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
         System.out.println("Subscriber :" + subscriber);
 //        System.out.println("ID : "+subscriber.getMsisdn());
@@ -80,6 +80,9 @@ public class MMNaijaController {
             //not subscribed
             if (null == subscription) {
                 //add subscription
+                return (subscriberService.subscribeUser(subscriber, campaign, start))
+                        ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
+                        : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
 
             } else {
                 //already subscribed
@@ -87,7 +90,6 @@ public class MMNaijaController {
 
             }
         }
-        return null;
 
     }
 
