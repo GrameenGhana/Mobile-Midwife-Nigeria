@@ -7,9 +7,11 @@ package org.motechproject.mmnaija.service.impl;
 
 import java.util.Date;
 import org.joda.time.LocalDate;
+import org.motechproject.messagecampaign.contract.CampaignRequest;
 import org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollment;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollmentStatus;
+import org.motechproject.messagecampaign.service.MessageCampaignService;
 import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
@@ -34,6 +36,8 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     ServiceDataService serviceDataService;
 
     @Autowired
+    MessageCampaignService messageCampaignService;
+    @Autowired
     SubscriptionDataService subscriptionDataService;
     public static String Campaign_Nam = "";
 
@@ -41,10 +45,13 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     public boolean addSubscription(Subscriber sub, String campaign, int start, String status) {
         org.motechproject.mmnaija.domain.MessageService service = serviceDataService.findServiceByContentId(Integer.parseInt(campaign));
 
-        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey());
-
-        enr.setReferenceDate(new LocalDate());
-        CampaignEnrollment enrolment = enrollmentService.create(enr);
+        CampaignRequest request = new CampaignRequest(String.valueOf(sub.getMsisdn()), service.getSkey(), new LocalDate(), null);
+//        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey());
+//
+//        enr.setReferenceDate(new LocalDate());
+        messageCampaignService.enroll(request);
+        
+        CampaignEnrollment enrolment = enrollmentService.findByExternalIdAndCampaignName(String.valueOf(sub.getMsisdn()), service.getSkey());
         if (null != enrolment) {
             System.out.println("Start Point");
             start = getSMSStartPoint(service, start);
@@ -58,9 +65,12 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     }
 
     public CampaignEnrollment enrollSubscriber(Subscription subscription, String campaign, Date refDate) {
-        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(subscription.getSubscriber()), campaign);
-
-        enr.setReferenceDate(new LocalDate(refDate));
+//        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(subscription.getSubscriber()), campaign);
+//
+//        enr.setReferenceDate(new LocalDate(refDate));
+       CampaignRequest request= new CampaignRequest(subscription.getSubscriber(), campaign , new LocalDate(refDate), null);
+       messageCampaignService.enroll(request);
+       CampaignEnrollment enr  = enrollmentService.findByExternalIdAndCampaignName(subscription.getSubscriber(), campaign);
         return enr;
     }
 

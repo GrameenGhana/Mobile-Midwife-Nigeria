@@ -17,7 +17,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "14:40"
+                "startTime": "16:40"
             },
              {
                 "name": "IVR_2",
@@ -32,7 +32,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "14:50"
+                "startTime": "16:50"
             },
              {
                 "name": "IVR_3",
@@ -47,7 +47,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "15:00"
+                "startTime": "16:30"
             },
              {
                 "name": "IVR_4",
@@ -62,7 +62,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "15:10"
+                "startTime": "16:25"
             },
              {
                 "name": "IVR_5",
@@ -77,7 +77,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "15:30"
+                "startTime": "17:00"
             },
              {
                 "name": "IVR_6",
@@ -92,7 +92,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "15:55"
+                "startTime": "17:15"
             },
              {
                 "name": "IVR_7",
@@ -107,7 +107,7 @@
                     "Wednesday",
                     "Thursday"
                 ],
-                "startTime": "16:05"
+                "startTime": "17:20"
             }
         ]
     }

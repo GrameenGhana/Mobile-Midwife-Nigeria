@@ -53,6 +53,6 @@
     <osgi:reference id="configurationServiceOsgi"
                     interface="org.motechproject.config.service.ConfigurationService"/>
     
-<!--    <osgi:reference id="messageCampaignService"
-                        interface="org.motechproject.messagecampaign.service.MessageCampaignService"/>-->
+    <osgi:reference id="messageCampaignService"
+                        interface="org.motechproject.messagecampaign.service.MessageCampaignService"/>
 </beans>
