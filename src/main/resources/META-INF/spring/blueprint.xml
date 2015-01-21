@@ -4,6 +4,21 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
 
     <import resource="classpath*:META-INF/motech/*.xml" />
+    
+    <bean id="settings" class="org.motechproject.server.config.SettingsFacade"
+           autowire="byType">
+        <property name="configFiles">
+            <list>
+                <value>classpath:mmnaija.properties</value>
+            </list>
+        </property>
+        <property name="rawConfigFiles">
+            <list>
+                <value>classpath:message-campaign.json</value>
+            </list>
+        </property>
+    </bean>
+    
     <osgi:reference id="campaignEnrollmentServiceOsgi" interface="org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService" />
    
     <osgi:service ref="subscriberService"
@@ -29,10 +44,15 @@
                     interface="org.motechproject.mmnaija.repository.MessageDataService" />  
                     
     <osgi:reference id="scheduleDataService"
-                                    interface="org.motechproject.mmnaija.repository.ScheduleDataService" />
+                    interface="org.motechproject.mmnaija.repository.ScheduleDataService" />
   
     <osgi:reference id="subscriptionDataService"
                     interface="org.motechproject.mmnaija.repository.SubscriptionDataService" />
     <!--<osgi:reference id="eventRelayOsgi" interface="org.motechproject.event.listener.EventRelay" />
     -->
+    <osgi:reference id="configurationServiceOsgi"
+                    interface="org.motechproject.config.service.ConfigurationService"/>
+    
+<!--    <osgi:reference id="messageCampaignService"
+                        interface="org.motechproject.messagecampaign.service.MessageCampaignService"/>-->
 </beans>

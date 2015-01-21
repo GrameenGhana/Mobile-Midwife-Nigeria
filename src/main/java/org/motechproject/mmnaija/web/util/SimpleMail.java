@@ -11,7 +11,6 @@ package org.motechproject.mmnaija.web.util;
  * @Date   Mar 7, 2013
  */
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.mail.*;
 import javax.mail.internet.*;

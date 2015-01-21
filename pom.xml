@@ -143,7 +143,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>motech-message-campaign</artifactId>
+            <artifactId>message-campaign</artifactId>
             <version>${motech.version}</version>
         </dependency>
         
@@ -200,7 +200,7 @@
                         <Export-Package>org.motechproject.mmnaija.service;version=${project.version},
                             org.motechproject.mmnaija.repository;version=${project.version},
                             org.motechproject.mmnaija.domain;version=${project.version},</Export-Package>
-                        <Import-Package>org.motechproject.osgi.web,
+                        <Import-Package>org.motechproject.osgi.web, org.motechproject.config.service,
                             *</Import-Package>
                     </instructions>
                 </configuration>

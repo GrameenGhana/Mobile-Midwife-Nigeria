@@ -22,6 +22,8 @@
         </constructor-arg>
         <property name="defaultURL" value="/mmnaija"/>
     </bean>
+    
+    
 
 
 </beans>

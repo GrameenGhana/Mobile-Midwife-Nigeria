@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author seth
  */
 @Controller
+@RequestMapping("/web-api")
 public class MMNaijaController {
 
     @Autowired
@@ -52,7 +53,7 @@ public class MMNaijaController {
      * @param current
      * @return
      */
-    @RequestMapping(value = "/web-api/v1/subscriber/register", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/v1/subscriber/register", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String registerSubscriber(
             @RequestParam(value = "msisdn") String msisdn,
@@ -111,7 +112,7 @@ public class MMNaijaController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/web-api/v1/subscriber/unsubscribe", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/v1/subscriber/unsubscribe", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String unSubscribe(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
@@ -129,7 +130,7 @@ public class MMNaijaController {
         }
     }
 
-    @RequestMapping(value = "/web-api/v1/subscriber/pause", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/v1/subscriber/pause", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String pauseSubscription(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
@@ -150,7 +151,7 @@ public class MMNaijaController {
         }
     }
 
-    @RequestMapping(value = "/web-api/v1/subscriber/resume", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/v1/subscriber/resume", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String resumeSubscription(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
@@ -198,7 +199,7 @@ public class MMNaijaController {
         }
     }
 
-    @RequestMapping("/web-api/mmnaija")
+    @RequestMapping("/mmnaija")
     @ResponseBody
     public String hiMMNaija() {
         return "MM Naija dey run";

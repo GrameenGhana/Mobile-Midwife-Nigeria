@@ -1,83 +1,113 @@
 [
-    {
-        "name": "pregnancy_tester_SMS",
+   {
+        "name": "mmnaija_2nd_IVR",
         "type": "DAY_OF_WEEK",
         "maxDuration": "2 weeks",
         "messages": [
             {
-                "name": "mmsms_1",
+                "name": "IVR_1",
                 "formats": [
-                    "SMS"
+                    "IVR"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_1",
+                "messageKey": "IVR_1",
                 "repeatOn": [
-                    "Monday",
-                    "Tuesday"
+                    "Wednesday",
+                    "Thursday"
                 ],
-                "startTime": "15:15"
+                "startTime": "14:40"
             },
-            {
-                "name": "mmsms_2",
+             {
+                "name": "IVR_2",
                 "formats": [
-                    "SMS"
+                    "IVR"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_2",
+                "messageKey": "IVR_2",
                 "repeatOn": [
-                    "Monday",
-                    "Tuesday"
+                    "Wednesday",
+                    "Thursday"
                 ],
-                "startTime": "12:15"
+                "startTime": "14:50"
             },
-            {
-                "name": "mmsms_3",
+             {
+                "name": "IVR_3",
                 "formats": [
-                    "SMS"
+                    "IVR"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_3",
+                "messageKey": "IVR_3",
                 "repeatOn": [
-                    "Monday",
-                    "Tuesday"
+                    "Wednesday",
+                    "Thursday"
                 ],
-                "startTime": "15:35"
+                "startTime": "15:00"
             },
-            {
-                "name": "mmsms_4",
+             {
+                "name": "IVR_4",
                 "formats": [
-                    "SMS"
+                    "IVR"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_4",
+                "messageKey": "IVR_4",
                 "repeatOn": [
-                    "Monday",
-                    "Tuesday"
+                    "Wednesday",
+                    "Thursday"
                 ],
-                "startTime": "15:45"
+                "startTime": "15:10"
             },
-            {
-                "name": "mmsms_5",
+             {
+                "name": "IVR_5",
                 "formats": [
-                    "SMS"
+                    "IVR"
                 ],
                 "languages": [
                     "en"
                 ],
-                "messageKey": "mmsms_5",
+                "messageKey": "IVR_5",
                 "repeatOn": [
-                    "Monday",
-                    "Tuesday"
+                    "Wednesday",
+                    "Thursday"
                 ],
-                "startTime": "16:00"
+                "startTime": "15:30"
+            },
+             {
+                "name": "IVR_6",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "IVR_6",
+                "repeatOn": [
+                    "Wednesday",
+                    "Thursday"
+                ],
+                "startTime": "15:55"
+            },
+             {
+                "name": "IVR_7",
+                "formats": [
+                    "IVR"
+                ],
+                "languages": [
+                    "en"
+                ],
+                "messageKey": "IVR_7",
+                "repeatOn": [
+                    "Wednesday",
+                    "Thursday"
+                ],
+                "startTime": "16:05"
             }
         ]
     }
