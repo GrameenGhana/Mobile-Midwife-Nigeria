@@ -18,7 +18,7 @@ public class Schedule {
 
     @Field
     private String subscription;
-    @Field 
+    @Field
     private String message;
     @Field
     private String contentType;
@@ -63,11 +63,9 @@ public class Schedule {
         return message;
     }
 
-    /**
-     * @param message the message to set
-     */
-    public void setMessage(Message message) {
-        this.message = message.getMessageKey();
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
@@ -211,6 +209,5 @@ public class Schedule {
     public void setSubscriber(String subscriber) {
         this.subscriber = subscriber;
     }
-    
-    
+
 }

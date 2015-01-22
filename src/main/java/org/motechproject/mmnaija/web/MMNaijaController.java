@@ -6,11 +6,14 @@
 package org.motechproject.mmnaija.web;
 
 import javax.servlet.http.HttpServletRequest;
+import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.ServiceDataService;
+import org.motechproject.mmnaija.repository.SubscriptionDataService;
+import org.motechproject.mmnaija.service.ScheduleService;
 import org.motechproject.mmnaija.service.SubscriberService;
 import org.motechproject.mmnaija.web.util.MMConstants;
 import org.motechproject.mmnaija.web.util.MMNaijaUtil;
@@ -34,7 +37,12 @@ public class MMNaijaController {
     private SubscriberService subscriberService;
     @Autowired
     private ServiceDataService messageService;
-
+  @Autowired
+    private SubscriptionDataService dataService;
+    @Autowired
+    private ServiceDataService serviceData;
+    @Autowired
+    ScheduleService scheduleService;
     @RequestMapping("/status")
     @ResponseBody
     public String status() {
@@ -203,6 +211,30 @@ public class MMNaijaController {
     @ResponseBody
     public String hiMMNaija() {
         return "MM Naija dey run";
+    }
+
+    @RequestMapping(value = "/v1/subscriber/sendmsg", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String simulateEventhandler(HttpServletRequest request) {
+    //?MessageKey=IVR_1&CampaignName=mmnaija_2nd_IVR&ExternalID=233244126634&JobID=142536
+        String msgKey = request.getParameter(EventKeys.MESSAGE_KEY);
+        String campaignKey = request.getParameter(EventKeys.CAMPAIGN_NAME_KEY);
+        String externalId = request.getParameter(EventKeys.EXTERNAL_ID_KEY);
+        String jobId = request.getParameter(EventKeys.SCHEDULE_JOB_ID_KEY);
+       System.out.println(String.format("message Details  msgkey %s externalId %s", msgKey, externalId));
+        if (MMNaijaUtil.validateMMNaijaMsgKey(campaignKey)) {
+
+            MessageService msr = serviceData.findServiceBySkey(campaignKey);
+            System.out.println("Msg Found  : "+msr.getContentId());
+            Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
+
+            scheduleService.playMessage(subscription, msgKey);
+        return   MMNaijaUtil.getDefaultResponseMessage(false, "msg handled at "+msgKey);
+        } else {
+           return MMNaijaUtil.getDefaultResponseMessage(false, "Not HandledHer :" + campaignKey);
+        }
+
+//        return MMNaijaUtil.getDefaultResponseMessage(false, msgKey);
     }
 
 }

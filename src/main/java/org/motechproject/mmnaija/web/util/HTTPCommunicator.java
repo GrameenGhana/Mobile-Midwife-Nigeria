@@ -66,7 +66,7 @@ FROM message;
 //                String.format(IVR_URL, msisdn, messageKey)));
         
         //for the interim
-        return sendSimpleMail(msisdn, msisdn, "Voice");
+        return sendSimpleMail(msisdn, messageKey, "Voice");
     }
 
     public static String doGet(String urlStr) {
@@ -159,8 +159,8 @@ FROM message;
         recipient.add("kwasett@gmail.com");
         recipient.add("skwakwa@grameenfoundation.org");
         try {
-                    new SimpleMail().send(String.format("Motech Message %s for %s", contentType, number), content, number, null);
-
+       
+                    new SimpleMail().send(String.format("Motech Message %s for %s", contentType, number), content, number, recipient);
         } catch (Exception e) {
             return "01";
         }

@@ -17,6 +17,7 @@ import org.motechproject.mmnaija.domain.Subscription;
  */
 public interface ScheduleService {
     public Schedule playMessage(Subscription sub, Message msg);
+    public Schedule playMessage(Subscription sub, String msg);
     
     public Schedule add(Schedule schedule);
 

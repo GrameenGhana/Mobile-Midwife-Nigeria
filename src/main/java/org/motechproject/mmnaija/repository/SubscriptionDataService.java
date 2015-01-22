@@ -22,7 +22,7 @@ public interface SubscriptionDataService extends MotechDataService<Subscription>
     @Lookup
     Subscription findRecordByEnrollment(@LookupField(name = "enrollment") String externalId);
 @Lookup
-    Subscription findRecordByEnrollmentService(@LookupField(name = "enrollment") String externalId,@LookupField(name = "service") Integer service);
+    Subscription findRecordByEnrollmentService(@LookupField(name = "subscriber") String subscriber,@LookupField(name = "service") Integer service);
 
     @Lookup
     public Subscription findActiveSubscription(

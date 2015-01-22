@@ -25,4 +25,9 @@ public class MMNaijaUtil {
         return json.toString();
     }
     
+    
+     public static boolean validateMMNaijaMsgKey(String campaignKey) {
+        return (campaignKey.startsWith("mmnaija") && !campaignKey.contains("_SMS"));
+    }
+    
 }
