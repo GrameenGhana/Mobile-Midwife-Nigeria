@@ -113,6 +113,20 @@ public class MMNaijaController {
         }
 
     }
+    
+     @RequestMapping(value = "/v1/subscriber/isregistered", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String checkRegistration(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+
+        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
+        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+           return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.ALREADY_SUBSCRIBED);
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.NOT_SUBSCRIBED);
+        }
+    }
 
     /**
      * For nsubscription users

@@ -19,6 +19,7 @@ org/motechproject/mmnaija/repository/LanguageDataService.class
 org/motechproject/mmnaija/domain/Subscriber.class
 org/motechproject/mmnaija/web/util/SimpleMail.class
 org/motechproject/mmnaija/repository/ServiceDataService.class
+org/motechproject/mmnaija/web/util/MessageResponse.class
 org/motechproject/mmnaija/domain/MessageService.class
 org/motechproject/mmnaija/domain/ScheduleStatus.class
 org/motechproject/mmnaija/repository/MessageDataService.class
@@ -29,4 +30,3 @@ org/motechproject/mmnaija/event/MessageSentEventHandler.class
 org/motechproject/mmnaija/web/MMNaijaController.class
 org/motechproject/mmnaija/domain/Message.class
 org/motechproject/mmnaija/domain/Language.class
-org/motechproject/mmnaija/web/util/SimpleMail$SMTPAuthenticator.class

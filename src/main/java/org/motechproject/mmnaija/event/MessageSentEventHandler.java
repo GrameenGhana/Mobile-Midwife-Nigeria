@@ -49,7 +49,7 @@ public class MessageSentEventHandler {
     @MotechListener(subjects = {EventKeys.SEND_MESSAGE})
     public void handleAfterMsgSent(MotechEvent event) {
         String campaignKey = (String) event.getParameters().get(EventKeys.CAMPAIGN_NAME_KEY);
-        System.out.println("Handling Msg  : " + campaignKey);
+       
         String msgKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
         String jobId = (String) event.getParameters().get(EventKeys.SCHEDULE_JOB_ID_KEY);
         String externalId = (String) event.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
@@ -57,10 +57,14 @@ public class MessageSentEventHandler {
         if (validateMMNaijaMsgKey(campaignKey)) {
 
             MessageService msr = serviceDate.findServiceBySkey(campaignKey);
-            System.out.println("Msg Found  : " + msr.getContentId());
-            Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
+            if (null != msr) {
+             
+                Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
 
-            scheduleService.playMessage(subscription, msgKey);
+                scheduleService.playMessage(subscription, msgKey);
+            } else {
+                System.out.println("Message Key not Valid");
+            }
         } else {
             log.warn("Not HandledHer :" + campaignKey);
         }

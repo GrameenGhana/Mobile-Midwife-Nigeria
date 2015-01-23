@@ -37,5 +37,12 @@ public class MMConstants {
     public static String RESUME_FAILED = "Resume Failed";
     public static String REACTIVATION_SUCCESSFUL = "Reactivating Successful";
     public static String REACTIVATION_FAILED = "Unable to reactivate";
+    
+    
+    public static String ALREADY_SUBSCRIBED = "Already Registered";
+
+    public static String NOT_SUBSCRIBED = "Not Registered";
+
+    
 
 }

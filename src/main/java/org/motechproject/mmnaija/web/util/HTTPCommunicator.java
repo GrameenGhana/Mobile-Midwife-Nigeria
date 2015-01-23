@@ -5,13 +5,10 @@
  */
 package org.motechproject.mmnaija.web.util;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.ConnectException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -20,16 +17,18 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.Schedule;
-import org.motechproject.mmnaija.domain.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  *
  * @author seth
  */
 public class HTTPCommunicator {
-
+    @Autowired
+//    private SettingsFacade settingsFacade;
     private static final Logger log = LoggerFactory.getLogger(HTTPCommunicator.class);
 
     public static String IVR_URL = "http://airtel1.v2nmobile.co.uk/mmarkHTTPCommunicatoret/GM_PLAY_FILE?msisdn=%s&callfile=%s.wav";
@@ -37,15 +36,6 @@ public class HTTPCommunicator {
             + "username=dhutchful@grameenfoundation.org&sender=561&receiver=%s&message=%s&message_type=1";
     public static String SUCCESSFUL_RESPONSE = "1";
 
-    /**
-     *
-     * SELECT *
-INTO OUTFILE '/tmp/result.txt'
-FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-FROM message;
-     * @return
-     */
     public static String sendSMS(String msisdn, String message) {
 //        return (doGet(
 //                String.format(SMS_URL, msisdn, message)));
@@ -160,7 +150,7 @@ FROM message;
         recipient.add("skwakwa@grameenfoundation.org");
         try {
        
-                    new SimpleMail().send(String.format("Motech Message %s for %s", contentType, number), content, number, recipient);
+                    new SimpleMail().send(String.format("Motech Message %s for %s", contentType, number), msg, number, recipient);
         } catch (Exception e) {
             return "01";
         }
