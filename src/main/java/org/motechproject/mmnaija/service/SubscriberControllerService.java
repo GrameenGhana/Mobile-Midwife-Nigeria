@@ -16,7 +16,8 @@ import org.motechproject.mmnaija.domain.Subscription;
 public interface SubscriberControllerService {
 
     boolean addSubscription(Subscriber sub, String campaign, int start);
-
+    boolean enrolSubscription(Subscription subscription);
+public void deleteCampaign(String campaign);
     boolean addSubscription(Subscriber sub, String campaign, int start, String status);
 
     int getSMSStartPoint(MessageService service, int currentPosition);

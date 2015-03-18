@@ -169,7 +169,7 @@ public class Schedule {
     public Schedule(Subscription subscription, Message message, Date deliveryDate, Date lastAttemptDate, int attempts, ScheduleStatus status, String callStatus, String call_retry, String callDuration) {
         this.subscription = subscription.getEnrollment();
         this.subscriber = subscription.getSubscriber();
-        this.message = message.getMessageKey();
+        this.message = message.getContent();
         this.deliveryDate = deliveryDate;
         this.lastAttemptDate = lastAttemptDate;
         this.attempts = attempts;

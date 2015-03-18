@@ -72,8 +72,9 @@ public class SimpleMail {
             msg.setReplyTo(InternetAddress.parse("mmnaija@mmnaija.com", false));
 
             msg.setSubject(subject, "UTF-8");
-
-            msg.setText(body, "UTF-8");
+            
+            msg.setContent(body,"text/html");
+//            msg.setText(body, "text/html; charset=utf-8");
 
             msg.setSentDate(new Date());
 

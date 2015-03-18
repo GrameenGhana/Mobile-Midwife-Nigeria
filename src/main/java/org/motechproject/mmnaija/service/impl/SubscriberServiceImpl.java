@@ -41,7 +41,19 @@ public class SubscriberServiceImpl implements SubscriberService {
 
         return create(msisdn, gender, age, pregnant, languageService.findByIsoCode(language));
     }
+    
+    
+    @Override
+    public boolean enrolUsersSubscribed(Subscription subscription)
+    {
+        return subscriberControllerService.enrolSubscription(subscription);
+    }
 
+    
+    
+    public void deleteCampaign(String campaign){
+        subscriberControllerService.deleteCampaign(campaign);
+    }
     public Subscriber create(String msisdn, int gender, int age, int pregnant, Language language) {
 
         return subscriberDataService.create(new Subscriber(msisdn, gender, age, pregnant, (language)));
@@ -64,7 +76,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, String language, String campaignName, int start) {
-        return createAndSubscribe(msisdn, gender, age, pregnant, languageService.findByIsoCode(language), campaignName, start);
+        Language lang = languageService.findById(Long.parseLong(language));
+        System.out.println("Language Selected : "+lang.getIsoCode());
+        return createAndSubscribe(msisdn, gender, age, pregnant, languageService.findById(Long.parseLong(language)), campaignName, start);
     }
 
     @Override
@@ -130,5 +144,26 @@ public class SubscriberServiceImpl implements SubscriberService {
     public boolean reactivateSubscribe(Subscription subscription) {
         return subscriberControllerService.reactivateSubscription(subscription);
     }
+
+    @Override
+    public boolean updateSubscription(Subscription subscription) {
+            subscriptionDataService.update(subscription);
+            return true;
+    }
+
+    @Override
+    public List<Subscription> subscriptionFindAll() {
+        return subscriptionDataService.retrieveAll();
+    }
+
+    @Override
+    public List<Subscription> findByStatus(String status) {  
+        return subscriptionDataService.findRecordByStatus(status);
+    }
+
+    @Override
+    public List<Subscription> findByStatusService(String status, Integer service) {
+
+    return subscriptionDataService.findRecordByServiceStatus(service, status);}
 
 }

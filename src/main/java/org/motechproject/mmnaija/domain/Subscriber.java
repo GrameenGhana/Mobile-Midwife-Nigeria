@@ -28,14 +28,14 @@ public class Subscriber  extends MdsEntity implements Serializable {
     @Field
     private int pregnant;
     @Field
-    private Language language;
+    private String  language_id;
 
     public Subscriber(String msisdn, int gender, int age, int pregnant, Language language) {
         this.msisdn = msisdn;
         this.gender = gender;
         this.age = age;
         this.pregnant = pregnant;
-        this.language = language;
+        this.language_id = language.getIsoCode();
     }
 
     /**
@@ -97,15 +97,15 @@ public class Subscriber  extends MdsEntity implements Serializable {
     /**
      * @return the language_id
      */
-    public Language getLanguage_id() {
-        return language;
+    public String getLanguage_id() {
+        return language_id;
     }
 
     /**
      * @param language_id the language_id to set
      */
-    public void setLanguage_id(Language language_id) {
-        this.language = language_id;
+    public void setLanguage_id(String language_id) {
+        this.language_id = language_id;
     }
 
    

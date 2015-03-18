@@ -15,9 +15,11 @@ import org.motechproject.mmnaija.domain.Message;
  * @author seth
  */
 public interface MessageDataService extends MotechDataService<Message> {
-@Lookup
+
+    @Lookup
     Message findByMessageKeyLanguageType(
             @LookupField(name = "messageKey") String msgKey);
+
     @Lookup
     Message findByMessageKeyLanguageType(
             @LookupField(name = "messageKey") String msgKey,
@@ -28,6 +30,13 @@ public interface MessageDataService extends MotechDataService<Message> {
     Message findByMessageKeyLanguage(
             @LookupField(name = "messageKey") String msgKey,
             @LookupField(name = "language") String langugge);
+
+    @Lookup
+    Message findByContentCurrentPositionLanguage(
+            @LookupField(name = "contentId") Integer contentId,
+            @LookupField(name = "language") String langugge,
+            @LookupField(name = "order") Integer order,
+            @LookupField(name = "contentType") String type);
 
     @Lookup
     Message findByMessageKeyType(

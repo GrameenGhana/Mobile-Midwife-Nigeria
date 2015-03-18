@@ -16,5 +16,6 @@ import org.motechproject.mmnaija.domain.Subscription;
 public interface SubscriptionService {
 
    
+  
    
 }

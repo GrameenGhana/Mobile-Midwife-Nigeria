@@ -21,12 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  *
  * @author seth
  */
 public class HTTPCommunicator {
+
     @Autowired
 //    private SettingsFacade settingsFacade;
     private static final Logger log = LoggerFactory.getLogger(HTTPCommunicator.class);
@@ -39,22 +39,22 @@ public class HTTPCommunicator {
     public static String sendSMS(String msisdn, String message) {
 //        return (doGet(
 //                String.format(SMS_URL, msisdn, message)));
- //for the interim
+        //for the interim
         return sendSimpleMail(msisdn, message, "SMS");
     }
 
-    public static String sendSMS(Schedule schedule,Message msg) {
+    public static String sendSMS(Schedule schedule, Message msg) {
         return sendSMS(schedule.getSubscriber(), msg.getMessageKey());
     }
 
-    public static String sendVoice(Schedule schedule,Message msg) {
+    public static String sendVoice(Schedule schedule, Message msg) {
         return sendVoice(schedule.getSubscriber(), msg.getMessageKey());
     }
 
     public static String sendVoice(String msisdn, String messageKey) {
 //        return (doGet(
 //                String.format(IVR_URL, msisdn, messageKey)));
-        
+
         //for the interim
         return sendSimpleMail(msisdn, messageKey, "Voice");
     }
@@ -140,18 +140,20 @@ public class HTTPCommunicator {
     public static String sendSimpleMail(String number, String content, String contentType) {
 
         String msg = String.format("Scheduled Message Detail<br />"
-                + "MSISDN       : %s<br />"
-                + "Content Type : %s<br/>"
-                + "Content <br />"
+                + "<strong>MSISDN       :</strong> %s<br />"
+                + "<strong>Content Type :</strong> %s<br/>"
+                    + "<strong>Content</strong> <br />-------------------------------------<br />"
                 + "%s<br /><br />"
                 + "", number, contentType, content);
         List<String> recipient = new ArrayList<>();
         recipient.add("kwasett@gmail.com");
-        recipient.add("skwakwa@grameenfoundation.org");
+//        recipient.add("skwakwa@grameenfoundation.org");
+        recipient.add("dhutchful@grameenfoundation.org");
         try {
-       
-                    new SimpleMail().send(String.format("Motech Message %s for %s", contentType, number), msg, number, recipient);
+
+            MMNaijaUtil.getSimpleMail().send(String.format("Motech Message %s for %s", contentType, number), msg, number, recipient);
         } catch (Exception e) {
+
             return "01";
         }
         return "00";

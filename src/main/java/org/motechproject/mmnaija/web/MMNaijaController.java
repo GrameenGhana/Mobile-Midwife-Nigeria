@@ -5,6 +5,8 @@
  */
 package org.motechproject.mmnaija.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.MessageService;
@@ -18,7 +20,10 @@ import org.motechproject.mmnaija.service.SubscriberService;
 import org.motechproject.mmnaija.web.util.MMConstants;
 import org.motechproject.mmnaija.web.util.MMNaijaUtil;
 import org.motechproject.mmnaija.web.util.MessageResponse;
+import org.motechproject.mmnaija.web.util.SimpleMail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,15 +42,71 @@ public class MMNaijaController {
     private SubscriberService subscriberService;
     @Autowired
     private ServiceDataService messageService;
-  @Autowired
+    @Autowired
     private SubscriptionDataService dataService;
     @Autowired
     private ServiceDataService serviceData;
     @Autowired
     ScheduleService scheduleService;
+
     @RequestMapping("/status")
     @ResponseBody
     public String status() {
+        return MMConstants.MMNAIJA_OK;
+    }
+
+    @RequestMapping(value = "/send", method = RequestMethod.GET)
+    public ResponseEntity<String> sen(HttpServletRequest request) {
+
+        try {
+            List<String> recipient = new ArrayList<>();
+            recipient.add("kwasett@gmail.com");
+            new SimpleMail().send("Welcome Seh", "Scheduled Message Detail<br /><strong>MSISDN       :</strong> 2347010276732<br /><strong>Content Type :</strong> Voice<br/><strong>Content</strong> <br />-------------------------------------<br />1_FEEDING<br /><br />", "SAKwakwa", recipient);
+        } catch (Exception e) {
+            System.out.println("Eror : " + e.getLocalizedMessage());
+        }
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    public ResponseEntity<String> reset(HttpServletRequest request) {
+        System.out.println("Reset camapings");
+
+        String[] userList = {"mmnaija_pregnancy_IVR", "mmnaija_pregnancy_SMS", "mmnaija_child_IVR", "mmnaija_child_SMS"};//"NYVRS SUNDAY IVR CAMPAIGN", "NYVRS KIKI IVR CAMPAIGN", "NYVRS RONALD IVR CAMPAIGN", "NYVRS RITA IVR CAMPAIGN", "NYVRS RITA SMS CAMPAIGN", "NYVRS KIKI SMS CAMPAIGN", "NYVRS RONALD SMS CAMPAIGN"};
+
+        for (String string : userList) {
+            try {
+                System.out.println("Resetting  : " + string);
+                subscriberService.deleteCampaign(string);
+            } catch (Exception e) {
+            }
+        }
+        try {
+//               new CampaignAssignment().doAssignment();
+        } catch (Exception e) {
+            System.out.println("Assignment Error : " + e.getLocalizedMessage());;
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v1/subscriber/assign", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String assignSubscription() {
+        List<Subscription> subscriptions = subscriberService.findByStatus("Active");
+        int cnt = -0;
+        for (Subscription subscribe : subscriptions) {
+            try {
+                cnt++;
+                System.out.println("Subscribing  : " + cnt);
+                Subscriber sub = subscriberService.findRecordByMsisdn(subscribe.getSubscriber());
+                subscriberService.enrolUsersSubscribed(subscribe);
+            } catch (Exception e) {
+                System.out.println("Assign Subscription " + e.getLocalizedMessage());
+            }
+        }
         return MMConstants.MMNAIJA_OK;
     }
 
@@ -72,6 +133,9 @@ public class MMNaijaController {
             @RequestParam(value = "service") String campaign,
             @RequestParam(value = "start_point") int start) {
 ///msisdn=233277143521&age=28&gender=m&language=en&pregnant=1&service=1&start_point=1
+        System.out.println(String.format("Registration String "
+                + "msisdn=%s&age=%s&gender=%s&language=%s&pregnant=%s&serive=%s&start_point=%s", msisdn,
+                age, maleOrFemale, language, preg, campaign, start));
         Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
         System.out.println("Subscriber :" + subscriber);
 //        System.out.println("ID : "+subscriber.getMsisdn());
@@ -113,8 +177,8 @@ public class MMNaijaController {
         }
 
     }
-    
-     @RequestMapping(value = "/v1/subscriber/isregistered", method = {RequestMethod.POST, RequestMethod.GET})
+
+    @RequestMapping(value = "/v1/subscriber/isregistered", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String checkRegistration(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
@@ -122,7 +186,7 @@ public class MMNaijaController {
 
         MessageResponse subscriptionResult = checkSubscription(msisdn, service);
         if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
-           return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.ALREADY_SUBSCRIBED);
+            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.ALREADY_SUBSCRIBED);
         } else {
             return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.NOT_SUBSCRIBED);
         }
@@ -230,22 +294,22 @@ public class MMNaijaController {
     @RequestMapping(value = "/v1/subscriber/sendmsg", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String simulateEventhandler(HttpServletRequest request) {
-    //?MessageKey=IVR_1&CampaignName=mmnaija_2nd_IVR&ExternalID=233244126634&JobID=142536
+        //?MessageKey=IVR_1&CampaignName=mmnaija_2nd_IVR&ExternalID=233244126634&JobID=142536
         String msgKey = request.getParameter(EventKeys.MESSAGE_KEY);
         String campaignKey = request.getParameter(EventKeys.CAMPAIGN_NAME_KEY);
         String externalId = request.getParameter(EventKeys.EXTERNAL_ID_KEY);
         String jobId = request.getParameter(EventKeys.SCHEDULE_JOB_ID_KEY);
-       System.out.println(String.format("message Details  msgkey %s externalId %s", msgKey, externalId));
+        System.out.println(String.format("message Details  msgkey %s externalId %s", msgKey, externalId));
         if (MMNaijaUtil.validateMMNaijaMsgKey(campaignKey)) {
 
             MessageService msr = serviceData.findServiceBySkey(campaignKey);
-            System.out.println("Msg Found  : "+msr.getContentId());
+            System.out.println("Msg Found  : " + msr.getContentId());
             Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
 
             scheduleService.playMessage(subscription, msgKey);
-        return   MMNaijaUtil.getDefaultResponseMessage(false, "msg handled at "+msgKey);
+            return MMNaijaUtil.getDefaultResponseMessage(false, "msg handled at " + msgKey);
         } else {
-           return MMNaijaUtil.getDefaultResponseMessage(false, "Not HandledHer :" + campaignKey);
+            return MMNaijaUtil.getDefaultResponseMessage(false, "Not HandledHer :" + campaignKey);
         }
 
 //        return MMNaijaUtil.getDefaultResponseMessage(false, msgKey);

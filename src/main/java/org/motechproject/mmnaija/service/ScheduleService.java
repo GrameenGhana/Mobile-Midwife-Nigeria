@@ -7,8 +7,10 @@ package org.motechproject.mmnaija.service;
 
 import java.util.List;
 import org.motechproject.mmnaija.domain.Message;
+import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Schedule;
 import org.motechproject.mmnaija.domain.ScheduleStatus;
+import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
 
 /**
@@ -18,6 +20,7 @@ import org.motechproject.mmnaija.domain.Subscription;
 public interface ScheduleService {
     public Schedule playMessage(Subscription sub, Message msg);
     public Schedule playMessage(Subscription sub, String msg);
+     Schedule playMessage(Subscription sub,Subscriber subscriber, MessageService msgService,String messageType);
     
     public Schedule add(Schedule schedule);
 

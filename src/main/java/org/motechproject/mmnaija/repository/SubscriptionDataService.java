@@ -41,4 +41,14 @@ public interface SubscriptionDataService extends MotechDataService<Subscription>
             @LookupField(name = "service") Integer msgSrv,
             @LookupField(name = "status") String status
     );
+    @Lookup
+     List<Subscription> findRecordByStatus(
+            @LookupField(name = "status") String status
+    );
+     
+       @Lookup
+    List<Subscription> findRecordByServiceStatus(
+            @LookupField(name = "service") Integer msgSrv,
+            @LookupField(name = "status") String status
+    );
 }

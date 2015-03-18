@@ -23,16 +23,19 @@ public interface SubscriberService {
     Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, String language, String campaignName, int start);
 
     boolean unsubscribeUser(Subscription subscription);
+    boolean updateSubscription(Subscription subscription);
 
     boolean pauseSubscribeUser(Subscription subscription);
 
     boolean resumeSubscribeUser(Subscription subscription);
+ public boolean enrolUsersSubscribed(Subscription subscription);
     boolean reactivateSubscribe(Subscription subscription);
-
+   public void deleteCampaign(String campaign);
     boolean completeSubscribeUser(Subscription subscription);
 
     public Subscription findActiveSubscription(Subscriber subscriber, org.motechproject.mmnaija.domain.MessageService msgService);
- public Subscription findSubscription(Subscriber subscriber, org.motechproject.mmnaija.domain.MessageService msgService);
+
+    public Subscription findSubscription(Subscriber subscriber, org.motechproject.mmnaija.domain.MessageService msgService);
 
     boolean subscribeUser(Subscriber subscriber, String campaignName, int start);
 
@@ -43,9 +46,13 @@ public interface SubscriberService {
     Subscriber findRecordByMsisdn(String msisdn);
 
     List<Subscriber> getRecords();
+List<Subscription> subscriptionFindAll();
+List<Subscription> findByStatus(String status);
+List<Subscription> findByStatusService(String status,Integer service);
 
     boolean deleteAll();
 
     boolean delete(Subscriber subcriber);
+    
 
 }

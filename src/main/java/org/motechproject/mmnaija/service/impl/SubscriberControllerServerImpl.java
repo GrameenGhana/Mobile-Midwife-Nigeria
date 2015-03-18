@@ -28,23 +28,47 @@ import org.springframework.stereotype.Service;
  */
 @Service("subscriberControllerServer")
 public class SubscriberControllerServerImpl implements SubscriberControllerService {
-
+    
     @Autowired
     CampaignEnrollmentDataService enrollmentService;
-
+    
     @Autowired
     ServiceDataService serviceDataService;
-
+    
     @Autowired
     MessageCampaignService messageCampaignService;
     @Autowired
     SubscriptionDataService subscriptionDataService;
     public static String Campaign_Nam = "";
-
+    
+    @Override
+    public boolean enrolSubscription(Subscription s) {
+        System.out.println("status  : " + s.getSubscriber());
+        if (s.getStatus().equals("Active")) {
+            
+            org.motechproject.mmnaija.domain.MessageService service = serviceDataService.findServiceByContentId((s.getService()));
+            System.out.println("Service Found " + service.getName());
+            System.out.println("Enrolment Statred : " + new Date().getTime());
+            
+            CampaignRequest request = new CampaignRequest(s.getSubscriber(), service.getSkey(), new LocalDate(), null);
+            
+            messageCampaignService.enroll(request);
+            System.out.println("Enrolment Done : " + new Date().getTime());
+            CampaignEnrollment enrolment = enrollmentService.findByExternalIdAndCampaignName(s.getSubscriber(), service.getSkey());
+            if (null != enrolment) {
+                s.setEnrollment(String.valueOf(enrolment.getId()));
+                subscriptionDataService.update(s);
+            }
+            System.out.println("Enrolment Search UpdateEnrolment : " + new Date().getTime());
+            
+        }
+        return true;
+    }
+    
     @Override
     public boolean addSubscription(Subscriber sub, String campaign, int start, String status) {
         org.motechproject.mmnaija.domain.MessageService service = serviceDataService.findServiceByContentId(Integer.parseInt(campaign));
-
+        System.out.println("Campaign to enrol : " + service.getName());
         CampaignRequest request = new CampaignRequest(String.valueOf(sub.getMsisdn()), service.getSkey(), new LocalDate(), null);
 //        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(sub.getMsisdn()), service.getSkey());
 //
@@ -63,17 +87,21 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         }
         return false;
     }
-
+    
+    public void deleteCampaign(String campaign) {
+        messageCampaignService.deleteCampaign(campaign);
+    }
+    
     public CampaignEnrollment enrollSubscriber(Subscription subscription, String campaign, Date refDate) {
 //        CampaignEnrollment enr = new CampaignEnrollment(String.valueOf(subscription.getSubscriber()), campaign);
 //
 //        enr.setReferenceDate(new LocalDate(refDate));
-       CampaignRequest request= new CampaignRequest(subscription.getSubscriber(), campaign , new LocalDate(refDate), null);
-       messageCampaignService.enroll(request);
-       CampaignEnrollment enr  = enrollmentService.findByExternalIdAndCampaignName(subscription.getSubscriber(), campaign);
+        CampaignRequest request = new CampaignRequest(subscription.getSubscriber(), campaign, new LocalDate(refDate), null);
+        messageCampaignService.enroll(request);
+        CampaignEnrollment enr = enrollmentService.findByExternalIdAndCampaignName(subscription.getSubscriber(), campaign);
         return enr;
     }
-
+    
     @Override
     public int getSMSStartPoint(org.motechproject.mmnaija.domain.MessageService service, int startService) {
         System.out.println("From :" + service.getContentId());
@@ -85,37 +113,37 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         }
         System.out.println("Serive :" + service.getMaxEntryPoint());
         System.out.println("Serive 3:" + service.getMinEntryPoint());
-
+        
         int smsStartPoint = (startService < service.getMinEntryPoint()) ? service.getMinEntryPoint() : startService;
         smsStartPoint = (startService > service.getMaxEntryPoint()) ? service.getMaxEntryPoint() : startService;
-
+        
         return smsStartPoint;
-
+        
     }
-
+    
     @Override
     public boolean unSubscribe(String msisdn, String service) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Subscriber updateSubscription() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public boolean addSubscription(Subscriber sub, String campaign, int start) {
         //Set default status to active
         return addSubscription(sub, campaign, start, Status.Active.toString());
     }
-
+    
     @Override
     public boolean unSubscribe(Subscription subscription) {
         if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
             //Already unsubsribed
             return false;
         }
-
+        
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
         subscription.setEndDate(new Date());
         subscription.setStatus(Status.InActive.toString());
@@ -123,15 +151,15 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         enrollmentService.delete(enroll);
         subscriptionDataService.update(subscription);
         return true;
-
+        
     }
-
+    
     public boolean pauseSubscription(Subscription subscription) {
         if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
             //Already unsubsribed
             return false;
         }
-
+        
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
 //        subscription.setEndDate(new Date());
         subscription.setStatus(Status.Paused.toString());
@@ -142,9 +170,9 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         enrollmentService.update(enroll);
         subscriptionDataService.update(subscription);
         return true;
-
+        
     }
-
+    
     public boolean resumeSubscription(Subscription subscription) {
         if (!subscription.getStatus().equalsIgnoreCase(Status.Paused.toString())) {
             //Already unsubsribed
@@ -158,13 +186,13 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         subscriptionDataService.update(subscription);
         return true;
     }
-
+    
     public boolean completeSubscription(Subscription subscription) {
         if (!subscription.getStatus().equalsIgnoreCase(Status.Active.toString())) {
             //Already unsubsribed
             return false;
         }
-
+        
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
 //        subscription.setEndDate(new Date());
         subscription.setStatus(Status.Completed.toString());
@@ -173,15 +201,15 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         enrollmentService.update(enroll);
         subscriptionDataService.update(subscription);
         return true;
-
+        
     }
-
+    
     @Override
     public boolean reactivateSubscription(Subscription subscription) {
-
+        
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
-
+        
         return null != enrollSubscriber(subscription, messageSer.getSkey(), new Date());
-
+        
     }
 }

@@ -11,6 +11,7 @@ import org.motechproject.event.listener.annotations.MotechListener;
 import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.MessageService;
+import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.MessageDataService;
 import org.motechproject.mmnaija.repository.ServiceDataService;
@@ -18,6 +19,7 @@ import org.motechproject.mmnaija.repository.SubscriptionDataService;
 import org.motechproject.mmnaija.service.ScheduleService;
 import org.motechproject.mmnaija.service.SubscriberService;
 import org.motechproject.mmnaija.web.util.MMConstants;
+import org.motechproject.mmnaija.web.util.SimpleMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,24 +48,30 @@ public class MessageSentEventHandler {
     ScheduleService scheduleService;
     private static final Logger log = LoggerFactory.getLogger(MessageSentEventHandler.class);
 
+    
     @MotechListener(subjects = {EventKeys.SEND_MESSAGE})
     public void handleAfterMsgSent(MotechEvent event) {
         String campaignKey = (String) event.getParameters().get(EventKeys.CAMPAIGN_NAME_KEY);
-       
+
         String msgKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
         String jobId = (String) event.getParameters().get(EventKeys.SCHEDULE_JOB_ID_KEY);
         String externalId = (String) event.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
         System.out.println(String.format("message Details  msgkey %s externalId %s", msgKey, externalId));
         if (validateMMNaijaMsgKey(campaignKey)) {
-
             MessageService msr = serviceDate.findServiceBySkey(campaignKey);
-            if (null != msr) {
-             
-                Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
+            String msgType = "sms";
 
-                scheduleService.playMessage(subscription, msgKey);
+            Subscriber sub = subscriberService.findRecordByMsisdn(externalId);
+            Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
+            if (subscription.getCurrentPoint() >= msr.getMinEntryPoint() && subscription.getCurrentPoint() <= msr.getMaxEntryPoint()) {
+                if (campaignKey.toUpperCase().endsWith("IVR")) {
+                    msgType = "voice";
+                }
+                scheduleService.playMessage(subscription, sub, msr, msgType);
             } else {
-                System.out.println("Message Key not Valid");
+                if (subscription.getCurrentPoint() > msr.getMaxEntryPoint()) {
+                    subscriberService.completeSubscribeUser(subscription);
+                }
             }
         } else {
             log.warn("Not HandledHer :" + campaignKey);
@@ -88,6 +96,7 @@ public class MessageSentEventHandler {
     }
 
     public boolean validateMMNaijaMsgKey(String campaignKey) {
-        return (campaignKey.startsWith("mmnaija") && !campaignKey.contains("_SMS"));
+//        return (campaignKey.startsWith("mmnaija") && !campaignKey.contains("_SMS"));
+        return (campaignKey.startsWith("mmnaija"));
     }
 }

@@ -16,7 +16,7 @@ import org.motechproject.mds.domain.MdsEntity;
  * @author seth
  */
 @Entity
-public class Language   {
+public class Language    {
     @Field
     private String name;
 
