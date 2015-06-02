@@ -1,0 +1,32 @@
+[
+    {
+        "name": "mmnaija_initial_IVR",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "5 Days",
+        "messages": [
+            {
+                "name": "Daily Message #12",
+                "formats": ["IVR", "SMS"],
+                "languages": ["en"],
+                "messageKey": "child-info-week-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "12:00"
+            },
+            {
+                "name": "Daily Message #11:40",
+                "formats": ["IVR", "SMS"],
+                "languages": ["en"],
+                "messageKey": "child-info-week2-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "11:40"
+            },
+            {
+                "name": "Daily Message #12:30",
+                "formats": ["IVR", "SMS"],
+                "languages": ["en"],
+                "messageKey": "child-info-week3-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "12:30"
+            }
+        ]
+    }]

@@ -1,0 +1,61 @@
+[
+    {
+        "name": "mmnaija_pregnancy_IVR",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "52 Days",
+        "messages": [
+            {
+                "name": "Daily Message #1",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "pregnancy-info-week-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "11:44"    
+            }
+        ]
+    },
+     {
+        "name": "mmnaija_pregnancy_SMS",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "52 Days",
+        "messages": [
+            {
+                "name": "Pregnancy Daily Message #1",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "pregnancy_sms_{offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "11:44"
+            }
+        ]
+    },
+     {
+        "name": "mmnaija_child_IVR",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "52 Days",
+        "messages": [
+            {
+                "name": "Child Daily Message #1",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "child-info-week-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "11:44"
+            }
+        ]
+    },
+     {
+        "name": "mmnaija_child_SMS",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "52 Days",
+        "messages": [
+            {
+                "name": "Daily cHILD SMS Message #1",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "child-sms-week-{Offset}-1",
+                "repeatEvery": "1 Day",
+                "startTime": "11:44"
+            }
+        ]
+    }]

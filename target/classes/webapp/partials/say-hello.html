@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="inside">
+        <div class="clearfix margin-before">
+
+            <div class="form-group">
+                <div class="controls">
+                    <button class="btn btn-primary" ng-click="sayHello()">
+                        {{msg('mmnaija.btn.sayHello')}}</button>
+                    {{msg('mmnaija.info.instructions')}}
+                </div>
+            </div>
+
+            <div class="clearfix">
+                <table
+                    class="table table-bordered table-condensed table-lightblue">
+                    <thead>
+                        <tr>
+                            <th>{{msg('mmnaija.info.serviceResponse')}}</th>
+                            <th>{{msg('mmnaija.info.serviceCount')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span>{{sayHelloResult}}</span></td>
+                            <td><span>{{sayHelloCount}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

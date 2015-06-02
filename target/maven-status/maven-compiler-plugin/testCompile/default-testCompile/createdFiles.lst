@@ -1,0 +1,6 @@
+org/motechproject/mmnaija/osgi/SubscriberControllerServiceTest.class
+org/motechproject/mmnaija/osgi/ScheduleServiceTest.class
+org/motechproject/mmnaija/web/ScheduleControllerTest.class
+org/motechproject/mmnaija/osgi/SubscriberServiceTest.class
+org/motechproject/mmnaija/osgi/MMNaijaSuiteTest.class
+org/motechproject/mmnaija/osgi/MMNaijaControllerTest.class

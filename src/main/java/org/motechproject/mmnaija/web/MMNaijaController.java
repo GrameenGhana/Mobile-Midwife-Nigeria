@@ -1,0 +1,318 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.motechproject.mmnaija.web;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.motechproject.messagecampaign.EventKeys;
+import org.motechproject.mmnaija.domain.MessageService;
+import org.motechproject.mmnaija.domain.Status;
+import org.motechproject.mmnaija.domain.Subscriber;
+import org.motechproject.mmnaija.domain.Subscription;
+import org.motechproject.mmnaija.repository.ServiceDataService;
+import org.motechproject.mmnaija.repository.SubscriptionDataService;
+import org.motechproject.mmnaija.service.ScheduleService;
+import org.motechproject.mmnaija.service.SubscriberService;
+import org.motechproject.mmnaija.web.util.MMConstants;
+import org.motechproject.mmnaija.web.util.MMNaijaUtil;
+import org.motechproject.mmnaija.web.util.MessageResponse;
+import org.motechproject.mmnaija.web.util.SimpleMail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author seth
+ */
+@Controller
+@RequestMapping("/web-api")
+public class MMNaijaController {
+
+    @Autowired
+    private SubscriberService subscriberService;
+    @Autowired
+    private ServiceDataService messageService;
+    @Autowired
+    private SubscriptionDataService dataService;
+    @Autowired
+    private ServiceDataService serviceData;
+    @Autowired
+    ScheduleService scheduleService;
+
+    @RequestMapping("/status")
+    @ResponseBody
+    public String status() {
+        return MMConstants.MMNAIJA_OK;
+    }
+
+    @RequestMapping(value = "/send", method = RequestMethod.GET)
+    public ResponseEntity<String> sen(HttpServletRequest request) {
+
+        try {
+            List<String> recipient = new ArrayList<>();
+            recipient.add("kwasett@gmail.com");
+            new SimpleMail().send("Welcome Seh", "Scheduled Message Detail<br /><strong>MSISDN       :</strong> 2347010276732<br /><strong>Content Type :</strong> Voice<br/><strong>Content</strong> <br />-------------------------------------<br />1_FEEDING<br /><br />", "SAKwakwa", recipient);
+        } catch (Exception e) {
+            System.out.println("Eror : " + e.getLocalizedMessage());
+        }
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    public ResponseEntity<String> reset(HttpServletRequest request) {
+        System.out.println("Reset camapings");
+
+        String[] userList = {"mmnaija_pregnancy_IVR", "mmnaija_pregnancy_SMS", "mmnaija_child_IVR", "mmnaija_child_SMS"};//"NYVRS SUNDAY IVR CAMPAIGN", "NYVRS KIKI IVR CAMPAIGN", "NYVRS RONALD IVR CAMPAIGN", "NYVRS RITA IVR CAMPAIGN", "NYVRS RITA SMS CAMPAIGN", "NYVRS KIKI SMS CAMPAIGN", "NYVRS RONALD SMS CAMPAIGN"};
+
+        for (String string : userList) {
+            try {
+                System.out.println("Resetting  : " + string);
+                subscriberService.deleteCampaign(string);
+            } catch (Exception e) {
+            }
+        }
+        try {
+//               new CampaignAssignment().doAssignment();
+        } catch (Exception e) {
+            System.out.println("Assignment Error : " + e.getLocalizedMessage());;
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v1/subscriber/assign", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String assignSubscription() {
+        List<Subscription> subscriptions = subscriberService.findByStatus("Active");
+        int cnt = -0;
+        for (Subscription subscribe : subscriptions) {
+            try {
+                cnt++;
+                System.out.println("Subscribing  : " + cnt);
+                Subscriber sub = subscriberService.findRecordByMsisdn(subscribe.getSubscriber());
+                subscriberService.enrolUsersSubscribed(subscribe);
+            } catch (Exception e) {
+                System.out.println("Assign Subscription " + e.getLocalizedMessage());
+            }
+        }
+        return MMConstants.MMNAIJA_OK;
+    }
+
+    /**
+     *
+     * @param msisdn
+     * @param age
+     * @param maleOrFemale
+     * @param language
+     * @param preg
+     * @param campaign
+     * @param start
+     * @param current
+     * @return
+     */
+    @RequestMapping(value = "/v1/subscriber/register", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String registerSubscriber(
+            @RequestParam(value = "msisdn") String msisdn,
+            @RequestParam(value = "age") int age,
+            @RequestParam(value = "gender") String maleOrFemale,
+            @RequestParam(value = "language") String language,
+            @RequestParam(value = "pregnant") int preg,
+            @RequestParam(value = "service") String campaign,
+            @RequestParam(value = "start_point") int start) {
+///msisdn=233277143521&age=28&gender=m&language=en&pregnant=1&service=1&start_point=1
+        System.out.println(String.format("Registration String "
+                + "msisdn=%s&age=%s&gender=%s&language=%s&pregnant=%s&serive=%s&start_point=%s", msisdn,
+                age, maleOrFemale, language, preg, campaign, start));
+        Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
+        System.out.println("Subscriber :" + subscriber);
+//        System.out.println("ID : "+subscriber.getMsisdn());
+        //Check of subscriber is already registered
+        if (null == subscriber) {
+            subscriber = subscriberService.createAndSubscribe(msisdn, (maleOrFemale.equalsIgnoreCase("m")) ? 1 : 2, age, preg, language, campaign, start);
+
+            return (null == subscriber)
+                    ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
+                    : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
+        } else {
+            MessageService content = messageService.findServiceByContentId(Integer.parseInt(campaign));
+            Subscription subscription = subscriberService.findSubscription(subscriber, content);
+            //not subscribed
+            if (null == subscription) {
+                //add subscription
+                return (subscriberService.subscribeUser(subscriber, campaign, start))
+                        ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
+                        : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
+
+            } else {
+                if (subscription.getStatus().equals(Status.Active)) {
+                    //already subscribed
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_ALREADY_EXIST);
+                }
+                if (subscription.getStatus().equals(Status.Paused)) {
+                    subscriberService.resumeSubscribeUser(subscription);
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_SUCCESSFUL);
+
+                } else if (subscription.getStatus().equals(Status.InActive)) {
+                    subscriberService.reactivateSubscribe(subscription);
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.REACTIVATION_SUCCESSFUL);
+
+                } else {
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
+                }
+
+            }
+        }
+
+    }
+
+    @RequestMapping(value = "/v1/subscriber/isregistered", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String checkRegistration(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+
+        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
+        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.ALREADY_SUBSCRIBED);
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.NOT_SUBSCRIBED);
+        }
+    }
+
+    /**
+     * For nsubscription users
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/v1/subscriber/unsubscribe", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String unSubscribe(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+
+        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
+        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+            if (subscriberService.unsubscribeUser(subscriptionResult.getSubscriptions())) {
+                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
+            } else {
+                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
+            }
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
+        }
+    }
+
+    @RequestMapping(value = "/v1/subscriber/pause", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String pauseSubscription(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+        System.out.println("MSISDN  : " + msisdn);
+        System.out.println("service  : " + service);
+        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
+        System.out.println("After check :" + subscriptionResult);
+        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+//            System.out.println("Paues : "+subscriptionResult);
+            if (subscriberService.pauseSubscribeUser(subscriptionResult.getSubscriptions())) {
+                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.PAUSE_SUCCESSFUL);
+            } else {
+                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.PAUSE_FAILED);
+            }
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
+        }
+    }
+
+    @RequestMapping(value = "/v1/subscriber/resume", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String resumeSubscription(HttpServletRequest request) {
+        String msisdn = request.getParameter("msisdn");
+        String service = request.getParameter("service");
+
+        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
+        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+            if (subscriberService.resumeSubscribeUser(subscriptionResult.getSubscriptions())) {
+                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.RESUME_SUCCESSFUL);
+            } else {
+                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_FAILED);
+            }
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
+        }
+    }
+
+    public MessageResponse checkSubscription(String msisdn, String service) {
+        Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
+
+        MessageResponse msgResponse = new MessageResponse();
+        //check if subscriber exist
+        if (null == subscriber) {
+            return new MessageResponse(MMConstants.SUBSCRIBER_NOT_FOUND_EXCEPTION, null);
+        } else {
+            System.out.println("Msg Service Start");
+            //checking service
+            MessageService msgService = messageService.findServiceByContentId(Integer.parseInt(service));
+            System.out.println("Msg Service : " + msgService.getName());
+            if (null == msgService) {
+                return new MessageResponse(MMConstants.SERVICE_NOT_FOUND_EXCEPTION, null);
+//                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SERVICE_NOT_FOUND_EXCEPTION);
+
+            } else {
+                //Checking subscription
+                Subscription subscriptions = subscriberService.findSubscription(subscriber, msgService);
+                if (null == subscriptions) {
+                    return new MessageResponse(MMConstants.SUBSCRIBER_NOT_FOUND_EXCEPTION, null);
+//                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_NOT_FOUND_EXCEPTION);
+                } else {
+                    return new MessageResponse("00", subscriptions);
+                }
+            }
+
+        }
+    }
+
+    @RequestMapping("/mmnaija")
+    @ResponseBody
+    public String hiMMNaija() {
+        return "MM Naija dey run";
+    }
+
+    @RequestMapping(value = "/v1/subscriber/sendmsg", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public String simulateEventhandler(HttpServletRequest request) {
+        //?MessageKey=IVR_1&CampaignName=mmnaija_2nd_IVR&ExternalID=233244126634&JobID=142536
+        String msgKey = request.getParameter(EventKeys.MESSAGE_KEY);
+        String campaignKey = request.getParameter(EventKeys.CAMPAIGN_NAME_KEY);
+        String externalId = request.getParameter(EventKeys.EXTERNAL_ID_KEY);
+        String jobId = request.getParameter(EventKeys.SCHEDULE_JOB_ID_KEY);
+        System.out.println(String.format("message Details  msgkey %s externalId %s", msgKey, externalId));
+        if (MMNaijaUtil.validateMMNaijaMsgKey(campaignKey)) {
+
+            MessageService msr = serviceData.findServiceBySkey(campaignKey);
+            System.out.println("Msg Found  : " + msr.getContentId());
+            Subscription subscription = dataService.findRecordByEnrollmentService(externalId, msr.getContentId());
+
+            scheduleService.playMessage(subscription, msgKey);
+            return MMNaijaUtil.getDefaultResponseMessage(false, "msg handled at " + msgKey);
+        } else {
+            return MMNaijaUtil.getDefaultResponseMessage(false, "Not HandledHer :" + campaignKey);
+        }
+
+//        return MMNaijaUtil.getDefaultResponseMessage(false, msgKey);
+    }
+
+}
