@@ -1,371 +1,61 @@
 [
     {
         "name": "mmnaija_pregnancy_IVR",
-        "type": "DAY_OF_WEEK",
-        "maxDuration": "2 weeks",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "50 weeks",
         "messages": [
             {
-                "name": "IVR_1",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_1",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:00"
-            },
-            {
-                "name": "IVR_2",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_2",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:50"
-            },
-            {
-                "name": "IVR_3",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_3",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "13:30"
-            },
-            {
-                "name": "IVR_4",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_4",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "14:25"
-            },
-            {
-                "name": "IVR_5",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_5",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "11:30"
+                "name": "mmnaija_pregnancy_IVR_m",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "mmnaija_pregnancy_IVR_mm",
+                "repeatEvery": "1 Week",
+                "startTime": "9:30"
             }
         ]
-    },
-    {
+    }, {
         "name": "mmnaija_pregnancy_SMS",
-        "type": "DAY_OF_WEEK",
-        "maxDuration": "2 weeks",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "220 Days",
         "messages": [
             {
-                "name": "SMS_1",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_1",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:00"
-            },
-            {
-                "name": "SMS_2",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_2",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:50"
-            },
-            {
-                "name": "SMS_3",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_3",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "13:30"
-            },
-            {
-                "name": "SMS_4",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_4",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "14:25"
-            },
-            {
-                "name": "SMS_5",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_5",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "11:30"
+                "name": "mmnaija_pregnancy_SMS_m",
+                "formats": ["SMS"],
+                "languages": ["en"],
+                "messageKey": "mmnaija_pregnancy_SMS_mm",
+                "repeatEvery": "1 Day",
+                "startTime": "10:30"
             }
         ]
-    },
-    {
+    }, {
         "name": "mmnaija_child_SMS",
-        "type": "DAY_OF_WEEK",
-        "maxDuration": "2 weeks",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "274 Days",
         "messages": [
             {
-                "name": "SMS_1",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_1",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:00"
-            },
-             {
-                "name": "SMS_2",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_2",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:50"
-            },
-             {
-                "name": "SMS_3",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_3",
-                "repeatOn": [
-                   "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "13:30"
-            },
-             {
-                "name": "SMS_4",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_4",
-                "repeatOn": [
-                     "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "14:25"
-            },
-             {
-                "name": "SMS_5",
-                "formats": [
-                    "SMS"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "SMS_5",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "11:30"
-            }
-        ]
-    }
-    
-    ,{
+                "name": "mmnaija_child_SMS_m",
+                "formats": ["SMS"],
+                "languages": ["en"],
+                "messageKey": "mmnaija_child_SMS_mm",
+                "repeatEvery": "1 Day",
+                "startTime": "10:30"
+            }]
+    }, {
         "name": "mmnaija_child_IVR",
-        "type": "DAY_OF_WEEK",
-        "maxDuration": "2 weeks",
+        "type": "REPEAT_INTERVAL",
+        "maxDuration": "52 Weeks",
         "messages": [
             {
-                "name": "IVR_1",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_1",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:00"
-            },
-             {
-                "name": "IVR_2",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_2",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "12:50"
-            },
-             {
-                "name": "IVR_3",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_3",
-                "repeatOn": [
-                   "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "13:30"
-            },
-             {
-                "name": "IVR_4",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_4",
-                "repeatOn": [
-                     "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "14:25"
-            },
-             {
-                "name": "IVR_5",
-                "formats": [
-                    "IVR"
-                ],
-                "languages": [
-                    "en"
-                ],
-                "messageKey": "IVR_5",
-                "repeatOn": [
-                    "Wednesday",
-                    "Thursday",
-                    "Monday",
-                    "Friday"
-                ],
-                "startTime": "11:30"
+                "name": "mmnaija_child_IVR_m",
+                "formats": ["IVR"],
+                "languages": ["en"],
+                "messageKey": "mmnaija_child_IVR_mm",
+                "repeatEvery": "1 Day",
+                "startTime": "10:30"
             }
         ]
     }
+
+
+
 ]

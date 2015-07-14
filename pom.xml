@@ -143,7 +143,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>message-campaign</artifactId>
+            <artifactId>sms</artifactId>
             <version>${motech.version}</version>
         </dependency>
         
@@ -157,6 +157,18 @@
             <artifactId>testng</artifactId>
             <version>6.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-sms-api</artifactId>
+            <version>0.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>message-campaign</artifactId>
+            <version>0.25-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

@@ -11,6 +11,7 @@ import org.motechproject.event.listener.annotations.MotechListener;
 import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.MessageService;
+import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
 import org.motechproject.mmnaija.repository.MessageDataService;
@@ -48,7 +49,6 @@ public class MessageSentEventHandler {
     ScheduleService scheduleService;
     private static final Logger log = LoggerFactory.getLogger(MessageSentEventHandler.class);
 
-    
     @MotechListener(subjects = {EventKeys.SEND_MESSAGE})
     public void handleAfterMsgSent(MotechEvent event) {
         String campaignKey = (String) event.getParameters().get(EventKeys.CAMPAIGN_NAME_KEY);
@@ -67,10 +67,13 @@ public class MessageSentEventHandler {
                 if (campaignKey.toUpperCase().endsWith("IVR")) {
                     msgType = "voice";
                 }
-                scheduleService.playMessage(subscription, sub, msr, msgType);
+             //   scheduleService.playMessage(subscription, sub, msr, msgType);
             } else {
                 if (subscription.getCurrentPoint() > msr.getMaxEntryPoint()) {
                     subscriberService.completeSubscribeUser(subscription);
+                }else{
+                    subscription.setCurrentPoint(subscription.getCurrentPoint()+1);
+                    subscriberService.updateSubscription(subscription);
                 }
             }
         } else {
@@ -93,6 +96,24 @@ public class MessageSentEventHandler {
             subscriberService.completeSubscribeUser(s);
 
         }
+    }
+
+    @MotechListener(subjects = {MsgSendEvent.EVENT_MSG})
+    public void handleMsgSent(MotechEvent event) {
+        Long subscriberId = (Long) event.getParameters().get(MsgSendEvent.SUBSCRIBER_ID);
+
+        Long subId = (Long) event.getParameters().get(MsgSendEvent.SUBSCRIPTION_ID);
+        
+        Subscription sub = subscriberService.findSubscriptionById(subscriberId);
+        MessageService msgService = messageServiceataService.findServiceByContentId(sub.getService());
+        
+        
+        sub.setCurrentPoint(sub.getCurrentPoint()+1);
+        if(sub.getCurrentPoint()>msgService.getMaxEntryPoint()){
+            sub.setStatus(Status.Completed.toString());
+            subscriberService.completeSubscribeUser(sub);
+        }
+        subscriberService.updateSubscription(sub);
     }
 
     public boolean validateMMNaijaMsgKey(String campaignKey) {

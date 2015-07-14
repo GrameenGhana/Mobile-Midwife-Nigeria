@@ -63,7 +63,7 @@ public class SubscriberControllerServiceTest  extends BasePaxIT {
 //        boolean expected = subscriberControllerService.addSubscription(subscriber, "1", 5);
 //        assertEquals(expected, true);
 
-        MessageService service = new MessageService(Integer.parseInt("1"), "pregnancy", "pregnancy", "sms", Integer.parseInt("1"), Integer.parseInt("242"), new Date(), 1, "1 day", Status.Active);
+        MessageService service = new MessageService(Integer.parseInt("1"), "pregnancy", "pregnancy", "sms", Integer.parseInt("1"), Integer.parseInt("242"), "+1 Week", 1, "1 day", Status.Active);
         service.setContentId(1);
         service.setMinEntryPoint(1);
         service.setMaxEntryPoint(242);

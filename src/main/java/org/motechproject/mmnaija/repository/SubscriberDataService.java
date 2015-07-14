@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.motechproject.mmnaija.repository;
 
 import java.util.List;
@@ -17,9 +16,16 @@ import org.motechproject.mmnaija.domain.Subscriber;
  *
  * @author seth
  */
-public interface SubscriberDataService 
-    extends MotechDataService<Subscriber> {
+public interface SubscriberDataService
+        extends MotechDataService<Subscriber> {
+
     @Lookup
     Subscriber findRecordByMsisdn(@LookupField(name = "msisdn") String phoneNumber);
+
+    @Lookup
+    Subscriber findRecordByMsisdnProvider(@LookupField(name = "msisdn") String phoneNumber, @LookupField(name = "provider") Long provider);
+
+ @Lookup
+    List<Subscriber> findRecordByProvider(@LookupField(name = "provider") Long provider);
 
 }

@@ -87,11 +87,11 @@ public class MessageService {
         this.minEntryPoint = minEntryPoint;
     }
 
-    public Date getTimeToStart() {
+    public String getTimeToStart() {
         return timeToStart;
     }
 
-    public void setTimeToStart(Date timeToStart) {
+    public void setTimeToStart(String timeToStart) {
         this.timeToStart = timeToStart;
     }
 
@@ -120,7 +120,7 @@ public class MessageService {
     }
 
     @Field(name = "time_to_start")
-    Date timeToStart;
+   String timeToStart;
 
     @Field(name = "repeat_freq")
     Integer repeatFrequency;
@@ -131,7 +131,7 @@ public class MessageService {
     @Field
     Status status;
 
-    public MessageService(Integer contentId, String name, String skey, String channel, Integer maxEntryPoint, Integer minEntryPoint, Date timeToStart, Integer repeatFrequency, String repeatTimeUnit, String status) {
+    public MessageService(Integer contentId, String name, String skey, String channel, Integer maxEntryPoint, Integer minEntryPoint,String timeToStart, Integer repeatFrequency, String repeatTimeUnit, String status) {
         this.contentId = contentId;
         this.name = name;
         this.skey = skey;
@@ -144,7 +144,7 @@ public class MessageService {
         this.status = Status.valueOf(status);
     }
 
-    public MessageService(Integer contentId, String name, String skey, String channel, Integer maxEntryPoint, Integer minEntryPoint, Date timeToStart, Integer repeatFrequency, String repeatTimeUnit, Status status) {
+    public MessageService(Integer contentId, String name, String skey, String channel, Integer maxEntryPoint, Integer minEntryPoint,String timeToStart, Integer repeatFrequency, String repeatTimeUnit, Status status) {
         this.contentId = contentId;
         this.name = name;
         this.skey = skey;

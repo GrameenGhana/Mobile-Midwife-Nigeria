@@ -1,32 +1,33 @@
 [
-    {
-        "name": "mmnaija_initial_IVR",
-        "type": "REPEAT_INTERVAL",
-        "maxDuration": "5 Days",
+    
+     {
+        "name": "OPEN_HOUSE_DEMO_SMS",
+        "type": "DAY_OF_WEEK",
+        "maxDuration": "1 Week",
         "messages": [
             {
-                "name": "Daily Message #12",
-                "formats": ["IVR", "SMS"],
+                "name": "NYVRS DAILY MESSAGE STARTER",
+                "formats": ["SMS"],
                 "languages": ["en"],
-                "messageKey": "child-info-week-{Offset}-1",
-                "repeatEvery": "1 Day",
-                "startTime": "12:00"
+                "messageKey": "sms_demo_1",
+                "repeatOn": [ "Tuesday", "Wednesday", "Monday"],
+                "startTime": "12:05"
             },
-            {
-                "name": "Daily Message #11:40",
-                "formats": ["IVR", "SMS"],
+             {
+                "name": "NYVRS DAILY MESSAGE STARTER",
+                "formats": ["SMS"],
                 "languages": ["en"],
-                "messageKey": "child-info-week2-{Offset}-1",
-                "repeatEvery": "1 Day",
-                "startTime": "11:40"
-            },
-            {
-                "name": "Daily Message #12:30",
-                "formats": ["IVR", "SMS"],
+                "messageKey": "sms_demo_2",
+                "repeatOn": [ "Tuesday", "Wednesday", "Monday"],
+                "startTime": "12:25"
+            }, {
+                "name": "NYVRS DAILY MESSAGE STARTER",
+                "formats": ["SMS"],
                 "languages": ["en"],
-                "messageKey": "child-info-week3-{Offset}-1",
-                "repeatEvery": "1 Day",
-                "startTime": "12:30"
+                "messageKey": "sms_demo_3",
+                "repeatOn": [ "Tuesday", "Wednesday", "Monday"],
+                "startTime": "13:05"
             }
+            
         ]
     }]

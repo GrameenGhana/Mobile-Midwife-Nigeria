@@ -16,7 +16,7 @@ import org.motechproject.mds.domain.MdsEntity;
  * @author seth
  */
 @Entity
-public class Subscriber  extends MdsEntity implements Serializable {
+public class Subscriber extends MdsEntity implements Serializable {
 
     @Field
 //    @Unique
@@ -28,7 +28,9 @@ public class Subscriber  extends MdsEntity implements Serializable {
     @Field
     private int pregnant;
     @Field
-    private String  language_id;
+    private String language_id;
+    @Field
+    private Long provider;
 
     public Subscriber(String msisdn, int gender, int age, int pregnant, Language language) {
         this.msisdn = msisdn;
@@ -36,6 +38,15 @@ public class Subscriber  extends MdsEntity implements Serializable {
         this.age = age;
         this.pregnant = pregnant;
         this.language_id = language.getIsoCode();
+    }
+
+    public Subscriber(String msisdn, int gender, int age, int pregnant, Language language, Long provider) {
+        this.msisdn = msisdn;
+        this.gender = gender;
+        this.age = age;
+        this.pregnant = pregnant;
+        this.language_id = language.getIsoCode();
+        this.provider = provider;
     }
 
     /**
@@ -108,5 +119,4 @@ public class Subscriber  extends MdsEntity implements Serializable {
         this.language_id = language_id;
     }
 
-   
 }

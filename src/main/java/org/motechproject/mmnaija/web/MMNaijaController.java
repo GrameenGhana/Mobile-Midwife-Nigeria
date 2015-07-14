@@ -6,8 +6,13 @@
 package org.motechproject.mmnaija.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.type.TypeReference;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.motechproject.messagecampaign.EventKeys;
 import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Status;
@@ -25,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -110,19 +117,175 @@ public class MMNaijaController {
         return MMConstants.MMNAIJA_OK;
     }
 
+    @RequestMapping(value = "/v1/subscriber/register", method = RequestMethod.POST)
+    public ResponseEntity<String> register(HttpServletRequest request) {
+        List<RegistrationRequest> reg = new ArrayList<>();
+        try {
+
+            String theString = IOUtils.toString(request.getInputStream(), "UTF-8");
+            System.out.println("JSON REceived : " + theString);
+            JSONArray ar = new JSONArray(theString);
+
+            for (int i = 0; i < ar.length(); i++) {
+                JSONObject json = ar.getJSONObject(i);
+                reg.add(new RegistrationRequest(json.getString("msisdn"), json.getString("gender"), json.getString("language"), json.getString("service"), json.getString("start_point"), json.getString("age"), json.getString("pregnant"), json.getString("provider_id")));
+            }
+        } catch (Exception e) {
+        }
+//        if (result.hasErrors()) {
+//            System.out.println("Error ::: " + result.toString());
+//            return "Error";
+//        }
+//
+
+        try {
+            JSONObject json = new JSONObject();
+            JSONArray jSONArray = new JSONArray();
+            for (RegistrationRequest regRequest1 : reg) {
+                FormatedRegRequest regRequest = new FormatedRegRequest(regRequest1);
+                Subscriber subscriber = subscriberService.findRecordByMsisdn(regRequest.getMsidn());
+                System.out.println("Subscriber  register:" + subscriber);
+
+//        System.out.println("ID : "+subscriber.getMsisdn());
+                //Check of subscriber is already registered
+                if (null == subscriber) {
+                    System.out.println("Subscripiton OK");
+                    subscriber = subscriberService.createAndSubscribe(regRequest.getMsidn(), regRequest.getGender(), regRequest.getAge(), regRequest.getPregnant(), regRequest.getLanguage(), String.valueOf(regRequest.getService()), regRequest.getService(), regRequest.getProvider_id());
+
+                    String responsive = (null == subscriber)
+                            ? MMConstants.SUBSCRIBER_UNABLE_REGISTERD
+                            : MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED;
+                    JSONObject obj = new JSONObject();
+                    obj.put("msisdn", regRequest.getMsidn());
+                    obj.put("status", responsive);
+//                  obj.put("statuserror", responsive);
+                    jSONArray.put(obj);
+                } else {
+                    System.out.println("Subscripiton NOT OK");
+
+                    MessageService content = messageService.findServiceByContentId((regRequest.getService()));
+                    Subscription subscription = subscriberService.findSubscription(subscriber, content);
+                    //not subscribed
+                    if (null == subscription) {
+                        //add subscription
+                        subscriberService.subscribeUser(subscriber, String.valueOf(regRequest.getService()), regRequest.getStart_point());
+//                    return ()
+//                            ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
+//                            : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
+
+                    } else {
+                        System.out.println("Subscripiton Already OK");
+
+                        if (subscription.getStatus().equals(Status.Active)) {
+                            //already subscribed
+//                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_ALREADY_EXIST);
+                        }
+                        if (subscription.getStatus().equals(Status.Paused)) {
+                            subscriberService.resumeSubscribeUser(subscription);
+//                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_SUCCESSFUL);
+                        } else if (subscription.getStatus().equals(Status.InActive)) {
+                            subscriberService.reactivateSubscribe(subscription);
+//                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.REACTIVATION_SUCCESSFUL);
+                        } else {
+//                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
+                        }
+
+                    }
+
+                }
+                System.out.println("Subscripiton FinalOK");
+            }
+            System.out.println("Subscripiton REq completed");
+        } catch (Exception e) {
+            System.out.println("Excception : " + e.getLocalizedMessage());
+        }
+
+        System.out.println("Before Return");
+        if (reg.size() > 0) {
+            return new ResponseEntity<String>(MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(MMNaijaUtil.getDefaultResponseMessage(true, "Empty Request"), HttpStatus.OK);
+        }
+
+    }
+
+    @RequestMapping(value = "/v1/subscriber/update", method = RequestMethod.POST)
+    public ResponseEntity<String> update(HttpServletRequest request) {
+        List<RegistrationRequest> reg = new ArrayList<>();
+        try {
+
+            String theString = IOUtils.toString(request.getInputStream(), "UTF-8");
+            System.out.println(new Date()+") JSON Update REceived : " + theString);
+            JSONArray ar = new JSONArray(theString);
+
+            for (int i = 0; i < ar.length(); i++) {
+                JSONObject json = ar.getJSONObject(i);
+                reg.add(new RegistrationRequest(json.getString("msisdn"), json.getString("gender"), json.getString("language"), json.getString("service"), json.getString("start_point"), json.getString("age"), json.getString("pregnant"), json.getString("provider_id")));
+            }
+        } catch (Exception e) {
+        }
+//        if (result.hasErrors()) {
+//            System.out.println("Error ::: " + result.toString());
+//            return "Error";
+//        }
+//
+
+        try {
+            JSONObject json = new JSONObject();
+            JSONArray jSONArray = new JSONArray();
+            for (RegistrationRequest regRequest1 : reg) {
+                FormatedRegRequest regRequest = new FormatedRegRequest(regRequest1);
+                Subscriber subscriber = subscriberService.findRecordByMsisdn(regRequest.getMsidn());
+                System.out.println("Subscriber  register:" + subscriber);
+
+//        System.out.println("ID : "+subscriber.getMsisdn());
+                //Check of subscriber is already registered
+                if (null == subscriber) {
+                    System.out.println("Subscripiton OK");
+                    subscriber = subscriberService.createAndSubscribe(regRequest.getMsidn(), regRequest.getGender(), regRequest.getAge(), regRequest.getPregnant(), regRequest.getLanguage(), String.valueOf(regRequest.getService()), regRequest.getService(), regRequest.getProvider_id());
+
+                    String responsive = (null == subscriber)
+                            ? MMConstants.SUBSCRIBER_UNABLE_REGISTERD
+                            : MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED;
+                    JSONObject obj = new JSONObject();
+                    obj.put("msisdn", regRequest.getMsidn());
+                    obj.put("status", responsive);
+//                  obj.put("statuserror", responsive);
+                    jSONArray.put(obj);
+                } else {
+                    System.out.println("Subscripiton NOT OK");
+                    subscriber.setAge(regRequest.getAge());
+                    subscriber.setGender(regRequest.getGender());
+                    subscriber.setLanguage_id(regRequest.getLanguage());
+                    subscriber.setPregnant(regRequest.getPregnant());
+                    subscriberService.updateSubscriber(subscriber);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Excception : " + e.getLocalizedMessage());
+        }
+        System.out.println("Before Return");
+        if (reg.size() > 0) {
+            return new ResponseEntity<String>(MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_EDITED), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(MMNaijaUtil.getDefaultResponseMessage(true, "Empty Request"), HttpStatus.OK);
+        }
+
+    }
+
     /**
      *
      * @param msisdn
      * @param age
      * @param maleOrFemale
-     * @param language
+d     * @param language
      * @param preg
      * @param campaign
      * @param start
      * @param current
      * @return
      */
-    @RequestMapping(value = "/v1/subscriber/register", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/v1/subscriber/sregister", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String registerSubscriber(
             @RequestParam(value = "msisdn") String msisdn,
@@ -131,7 +294,8 @@ public class MMNaijaController {
             @RequestParam(value = "language") String language,
             @RequestParam(value = "pregnant") int preg,
             @RequestParam(value = "service") String campaign,
-            @RequestParam(value = "start_point") int start) {
+            @RequestParam(value = "start_point") int start,
+            @RequestParam(value = "provider") Long provider) {
 ///msisdn=233277143521&age=28&gender=m&language=en&pregnant=1&service=1&start_point=1
         System.out.println(String.format("Registration String "
                 + "msisdn=%s&age=%s&gender=%s&language=%s&pregnant=%s&serive=%s&start_point=%s", msisdn,
@@ -141,7 +305,7 @@ public class MMNaijaController {
 //        System.out.println("ID : "+subscriber.getMsisdn());
         //Check of subscriber is already registered
         if (null == subscriber) {
-            subscriber = subscriberService.createAndSubscribe(msisdn, (maleOrFemale.equalsIgnoreCase("m")) ? 1 : 2, age, preg, language, campaign, start);
+            subscriber = subscriberService.createAndSubscribe(msisdn, (maleOrFemale.equalsIgnoreCase("m")) ? 1 : 2, age, preg, language, campaign, start, provider);
 
             return (null == subscriber)
                     ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
@@ -164,11 +328,9 @@ public class MMNaijaController {
                 if (subscription.getStatus().equals(Status.Paused)) {
                     subscriberService.resumeSubscribeUser(subscription);
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_SUCCESSFUL);
-
                 } else if (subscription.getStatus().equals(Status.InActive)) {
                     subscriberService.reactivateSubscribe(subscription);
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.REACTIVATION_SUCCESSFUL);
-
                 } else {
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
                 }
@@ -182,14 +344,15 @@ public class MMNaijaController {
     @ResponseBody
     public String checkRegistration(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
-        String service = request.getParameter("service");
+//        String service = request.getParameter("service");
 
-        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
-        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
+        List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+        if (subscriptions.size() > 0) {
             return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.ALREADY_SUBSCRIBED);
         } else {
             return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.NOT_SUBSCRIBED);
         }
+
     }
 
     /**
@@ -202,57 +365,68 @@ public class MMNaijaController {
     @ResponseBody
     public String unSubscribe(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
-        String service = request.getParameter("service");
+//        String service = request.getParameter("service");
+        
+        
+        try {
 
-        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
-        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
-            if (subscriberService.unsubscribeUser(subscriptionResult.getSubscriptions())) {
-                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
-            } else {
-                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
-            }
-        } else {
-            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
+            String theString = IOUtils.toString(request.getInputStream(), "UTF-8");
+            System.out.println(new Date()+") JSON Update unsubscribe : " + theString);
+            System.out.println("Unsubscribe : "+msisdn);
+            JSONArray ar = new JSONArray(theString);
+
+          
+        } catch (Exception e) {
         }
+        List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+        for (Subscription subscription : subscriptions) {
+            if (subscriberService.unsubscribeUser(subscription)) {
+                MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
+            } else {
+
+            }
+        }
+        return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
     }
 
     @RequestMapping(value = "/v1/subscriber/pause", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String pauseSubscription(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
-        String service = request.getParameter("service");
+//        String service = request.getParameter("service");
         System.out.println("MSISDN  : " + msisdn);
-        System.out.println("service  : " + service);
-        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
-        System.out.println("After check :" + subscriptionResult);
-        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
-//            System.out.println("Paues : "+subscriptionResult);
-            if (subscriberService.pauseSubscribeUser(subscriptionResult.getSubscriptions())) {
+        List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+        for (Subscription subscription : subscriptions) {
+            if (subscriberService.pauseSubscribeUser(subscription)) {
                 return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.PAUSE_SUCCESSFUL);
             } else {
-                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.PAUSE_FAILED);
+
             }
-        } else {
-            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
         }
+        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.PAUSE_FAILED);
+
     }
 
     @RequestMapping(value = "/v1/subscriber/resume", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String resumeSubscription(HttpServletRequest request) {
         String msisdn = request.getParameter("msisdn");
-        String service = request.getParameter("service");
+//        String service = request.getParameter("service");
 
-        MessageResponse subscriptionResult = checkSubscription(msisdn, service);
-        if (subscriptionResult.getMsg().equalsIgnoreCase("00")) {
-            if (subscriberService.resumeSubscribeUser(subscriptionResult.getSubscriptions())) {
-                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.RESUME_SUCCESSFUL);
+//        String service = request.getParameter("service");
+        System.out.println("MSISDN  : " + msisdn);
+        List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+        for (Subscription subscription : subscriptions) {
+            if (subscriberService.resumeSubscribeUser(subscription)) {
+              return   MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.RESUME_SUCCESSFUL);
             } else {
                 return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_FAILED);
             }
-        } else {
-            return MMNaijaUtil.getDefaultResponseMessage(true, subscriptionResult.getMsg());
         }
+        
+        return MMNaijaUtil.getDefaultResponseMessage(true, "Not paused to Resume");
+
+        
     }
 
     public MessageResponse checkSubscription(String msisdn, String service) {
@@ -279,6 +453,37 @@ public class MMNaijaController {
 //                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_NOT_FOUND_EXCEPTION);
                 } else {
                     return new MessageResponse("00", subscriptions);
+                }
+            }
+
+        }
+    }
+
+    public MessageResponse checkSubscription(String msisdn) {
+        Subscriber subscriber = subscriberService.findRecordByMsisdn(msisdn);
+
+        MessageResponse msgResponse = new MessageResponse();
+        //check if subscriber exist
+        if (null == subscriber) {
+            return new MessageResponse(MMConstants.SUBSCRIBER_NOT_FOUND_EXCEPTION, null);
+        } else {
+            System.out.println("Msg Service Start");
+            List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+            //checking service
+            MessageService msgService = messageService.findServiceByContentId(subscriptions.get(0).getService());
+            System.out.println("Msg Service : " + msgService.getName());
+            if (null == msgService) {
+                return new MessageResponse(MMConstants.SERVICE_NOT_FOUND_EXCEPTION, null);
+//                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SERVICE_NOT_FOUND_EXCEPTION);
+
+            } else {
+                //Checking subscription
+                Subscription subscription = subscriptions.get(0);
+                if (null == subscriptions) {
+                    return new MessageResponse(MMConstants.SUBSCRIBER_NOT_FOUND_EXCEPTION, null);
+//                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_NOT_FOUND_EXCEPTION);
+                } else {
+                    return new MessageResponse("00", subscription);
                 }
             }
 

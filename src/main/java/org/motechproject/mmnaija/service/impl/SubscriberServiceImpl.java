@@ -41,22 +41,24 @@ public class SubscriberServiceImpl implements SubscriberService {
 
         return create(msisdn, gender, age, pregnant, languageService.findByIsoCode(language));
     }
-    
-    
+
     @Override
-    public boolean enrolUsersSubscribed(Subscription subscription)
-    {
+    public boolean enrolUsersSubscribed(Subscription subscription) {
         return subscriberControllerService.enrolSubscription(subscription);
     }
 
-    
-    
-    public void deleteCampaign(String campaign){
+    public void deleteCampaign(String campaign) {
         subscriberControllerService.deleteCampaign(campaign);
     }
+
     public Subscriber create(String msisdn, int gender, int age, int pregnant, Language language) {
 
         return subscriberDataService.create(new Subscriber(msisdn, gender, age, pregnant, (language)));
+    }
+
+    public Subscriber create(String msisdn, int gender, int age, int pregnant, Language language, Long provider) {
+
+        return subscriberDataService.create(new Subscriber(msisdn, gender, age, pregnant, (language), provider));
     }
 
     @Override
@@ -77,13 +79,26 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, String language, String campaignName, int start) {
         Language lang = languageService.findById(Long.parseLong(language));
-        System.out.println("Language Selected : "+lang.getIsoCode());
+        System.out.println("Language Selected : " + lang.getIsoCode());
         return createAndSubscribe(msisdn, gender, age, pregnant, languageService.findById(Long.parseLong(language)), campaignName, start);
+    }
+
+    @Override
+    public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, String language, String campaignName, int start, Long provider) {
+        Language lang = languageService.findById(Long.parseLong(language));
+        System.out.println("Language Selected : " + lang.getIsoCode());
+        return createAndSubscribe(msisdn, gender, age, pregnant, languageService.findById(Long.parseLong(language)), campaignName, start, provider);
     }
 
     @Override
     public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, Language language, String campaignName, int start) {
         Subscriber subscriber = create(msisdn, gender, age, pregnant, language);
+        subscriberControllerService.addSubscription(subscriber, campaignName, start);
+        return subscriber;
+    }
+
+    public Subscriber createAndSubscribe(String msisdn, int gender, int age, int pregnant, Language language, String campaignName, int start, Long provider) {
+        Subscriber subscriber = create(msisdn, gender, age, pregnant, language, provider);
         subscriberControllerService.addSubscription(subscriber, campaignName, start);
         return subscriber;
     }
@@ -147,8 +162,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public boolean updateSubscription(Subscription subscription) {
-            subscriptionDataService.update(subscription);
-            return true;
+        subscriptionDataService.update(subscription);
+        return true;
     }
 
     @Override
@@ -157,13 +172,31 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<Subscription> findByStatus(String status) {  
+    public List<Subscription> findByStatus(String status) {
         return subscriptionDataService.findRecordByStatus(status);
     }
 
     @Override
     public List<Subscription> findByStatusService(String status, Integer service) {
 
-    return subscriptionDataService.findRecordByServiceStatus(service, status);}
+        return subscriptionDataService.findRecordByServiceStatus(service, status);
+    }
+
+    @Override
+    public Subscription findSubscriptionById(Long subscriptionId) {
+        return subscriptionDataService.findById(subscriptionId);
+    }
+
+    @Override
+    public List<Subscription> findByStatusByUser(String msisdn) {
+
+        return subscriptionDataService.findRecordByUser(msisdn, "Active");
+    }
+
+    @Override
+    public boolean updateSubscriber(Subscriber subscription) {
+ subscriberDataService.update(subscription);
+return true;
+    }
 
 }

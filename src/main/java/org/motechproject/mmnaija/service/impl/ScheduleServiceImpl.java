@@ -118,12 +118,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     
     @Override
     public void scheduledRequest() {
-        List<Schedule> ivrShedules = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.V.toString());
-        
+        List<Schedule> ivrShedules = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.V.toString()); 
         processIVRs(ivrShedules);
         
-        List<Schedule> smsMessages = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.SMS.toString());
-        processSMS(smsMessages);
+//        List<Schedule> smsMessages = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.SMS.toString());
+//        processSMS(smsMessages);
     }
     
     public void processIVRs(List<Schedule> schedules) {

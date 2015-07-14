@@ -15,6 +15,7 @@ public class MMConstants {
     public static String SUBSCRIBER_NOT_FOUND_EXCEPTION = "Subscriber Not Found";
     public static String SUBSCRIBER_ALREADY_REGISTERED = "Subscriber Already Registered";
     public static String SUBSCRIBER_SUCCESSFULLY_REGISTERED = "Subscriber Successfully Registered";
+    public static String SUBSCRIBER_SUCCESSFULLY_EDITED = "Subscriber Successfully Edited";
     public static String SUBSCRIBER_UNABLE_REGISTERD = "Subscriber Unable to Registered";
 
     public static String CAMPAIGN_PREGNANCY = "pregnancy";

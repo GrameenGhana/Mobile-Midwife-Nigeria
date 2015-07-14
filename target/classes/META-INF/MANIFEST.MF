@@ -7,34 +7,36 @@ Export-Package: org.motechproject.mmnaija.service;uses:="org.motechpro
  rg.motechproject.mds.annotations,org.motechproject.mds.domain,org.mot
  echproject.messagecampaign.domain.campaign";version="0.1.0.SNAPSHOT"
 Blueprint-Enabled: true
-Built-By: seth
+Built-By: skwakwa
 Tool: Bnd-1.43.0
 Bundle-Name: Mobile Midwife Nigeria
 Created-By: Apache Maven Bundle Plugin
 Context-File: META-INF/motech/applicationContext.xml
-Build-Jdk: 1.7.0_67
+Build-Jdk: 1.7.0_80
 Resource-Path: mmnaija/resources
 Bundle-Version: 0.1.0.SNAPSHOT
 Context-Path: mmnaija
-Bnd-LastModified: 1422024232711
+Bnd-LastModified: 1436869679499
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.motechproject.mmnaija
-Import-Package: javax.jdo.annotations;version="[3.0,4)",javax.mail,jav
- ax.mail.internet,javax.servlet.http;version="[2.5,3)",org.apache.comm
- ons.io;version="[1.4,2)",org.joda.time;version="[2.0,3)",org.json,org
- .motechproject.commons.date.model;version="[0.25,1)",org.motechprojec
- t.config.service,org.motechproject.event;version="[0.25,1)",org.motec
- hproject.event.listener.annotations;version="[0.25,1)",org.motechproj
- ect.mds.annotations;version="[0.25,1)",org.motechproject.mds.domain;v
- ersion="[0.25,1)",org.motechproject.mds.service;version="[0.25,1)",or
- g.motechproject.messagecampaign.contract;version="[0.25,1)",org.motec
- hproject.messagecampaign.dao;version="[0.25,1)",org.motechproject.mes
- sagecampaign.domain.campaign;version="[0.25,1)",org.motechproject.mes
- sagecampaign.service;version="[0.25,1)",org.motechproject.mmnaija.dom
- ain;version="[0.1,1)",org.motechproject.mmnaija.repository;version="[
- 0.1,1)",org.motechproject.mmnaija.service;version="[0.1,1)",org.motec
- hproject.osgi.web;version="[0.25,1)",org.motechproject.server.config,
- org.slf4j;version="[1.7,2)",org.springframework.beans.factory.annotat
- ion;version="[3.1,4)",org.springframework.stereotype;version="[3.1,4)
- ",org.springframework.web.bind.annotation;version="[3.1,4)"
+Import-Package: javax.jdo.annotations;version="[3.0,4)",javax.mail;ver
+ sion="[1.4,2)",javax.mail.internet;version="[1.4,2)",javax.servlet;ve
+ rsion="[2.5,3)",javax.servlet.http;version="[2.5,3)",org.apache.commo
+ ns.io;version="[1.4,2)",org.joda.time;version="[2.0,3)",org.json,org.
+ motechproject.commons.date.model;version="[0.25,1)",org.motechproject
+ .config.service,org.motechproject.event;version="[0.25,1)",org.motech
+ project.event.listener.annotations;version="[0.25,1)",org.motechproje
+ ct.mds.annotations;version="[0.25,1)",org.motechproject.mds.domain;ve
+ rsion="[0.25,1)",org.motechproject.mds.service;version="[0.25,1)",org
+ .motechproject.messagecampaign.contract;version="[0.25,1)",org.motech
+ project.messagecampaign.dao;version="[0.25,1)",org.motechproject.mess
+ agecampaign.domain.campaign;version="[0.25,1)",org.motechproject.mess
+ agecampaign.service;version="[0.25,1)",org.motechproject.mmnaija.doma
+ in;version="[0.1,1)",org.motechproject.mmnaija.repository;version="[0
+ .1,1)",org.motechproject.mmnaija.service;version="[0.1,1)",org.motech
+ project.osgi.web;version="[0.25,1)",org.motechproject.server.config,o
+ rg.slf4j;version="[1.7,2)",org.springframework.beans.factory.annotati
+ on;version="[3.1,4)",org.springframework.http;version="[3.1,4)",org.s
+ pringframework.stereotype;version="[3.1,4)",org.springframework.web.b
+ ind.annotation;version="[3.1,4)"
 
