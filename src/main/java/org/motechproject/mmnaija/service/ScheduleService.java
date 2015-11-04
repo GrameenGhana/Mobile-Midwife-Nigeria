@@ -25,6 +25,7 @@ public interface ScheduleService {
     public Schedule add(Schedule schedule);
 
     public Schedule create(Subscription subscription, org.motechproject.mmnaija.domain.Message msg, ScheduleStatus status);
+  public Schedule create(Subscription subscription, org.motechproject.mmnaija.domain.Message msg, ScheduleStatus status,String response);
 
     public Schedule create(Subscription subscription, org.motechproject.mmnaija.domain.Message msg, ScheduleStatus status, String callStatus, String callDuration);
 

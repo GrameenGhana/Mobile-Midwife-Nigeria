@@ -32,6 +32,7 @@ org/motechproject/mmnaija/repository/MessageDataService.class
 org/motechproject/mmnaija/domain/Subscription.class
 org/motechproject/mmnaija/service/SubscriberService.class
 org/motechproject/mmnaija/event/MessageSentEventHandler.class
+org/motechproject/mmnaija/web/util/SubscriptionScheduler.class
 org/motechproject/mmnaija/web/MMNaijaController.class
 org/motechproject/mmnaija/domain/Message.class
 org/motechproject/mmnaija/web/FormatedRegRequest.class

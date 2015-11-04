@@ -39,6 +39,8 @@ public class Schedule {
     private String call_retry;
     @Field(name = "call_duration")
     private String callDuration;
+    @Field(name = "response")
+    private String scheduleResponse;
     @Field
     private String subscriber;
 
@@ -208,6 +210,20 @@ public class Schedule {
      */
     public void setSubscriber(String subscriber) {
         this.subscriber = subscriber;
+    }
+
+    /**
+     * @return the scheduleResponse
+     */
+    public String getScheduleResponse() {
+        return scheduleResponse;
+    }
+
+    /**
+     * @param scheduleResponse the scheduleResponse to set
+     */
+    public void setScheduleResponse(String scheduleResponse) {
+        this.scheduleResponse = scheduleResponse;
     }
 
 }

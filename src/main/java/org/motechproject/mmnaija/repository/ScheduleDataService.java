@@ -26,5 +26,8 @@ public interface ScheduleDataService extends MotechDataService<Schedule> {
     List<Schedule> findByStatusAndChannel(@LookupField(name = "status") ScheduleStatus status, @LookupField(name = "contentType") String channel);
 
     @Lookup
-    Schedule findBySubscriber(@LookupField(name = "callStatus") String msisdn);
+    Schedule findBySubscriber(@LookupField(name = "callStatus") String msisdn);  
+    
+    @Lookup
+    Schedule findByMsisdn(@LookupField(name = "subscriber") String msisdn);
 }

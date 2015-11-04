@@ -16,7 +16,7 @@ Build-Jdk: 1.7.0_80
 Resource-Path: mmnaija/resources
 Bundle-Version: 0.1.0.SNAPSHOT
 Context-Path: mmnaija
-Bnd-LastModified: 1436869679499
+Bnd-LastModified: 1446629391727
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.motechproject.mmnaija
 Import-Package: javax.jdo.annotations;version="[3.0,4)",javax.mail;ver
@@ -34,9 +34,11 @@ Import-Package: javax.jdo.annotations;version="[3.0,4)",javax.mail;ver
  agecampaign.service;version="[0.25,1)",org.motechproject.mmnaija.doma
  in;version="[0.1,1)",org.motechproject.mmnaija.repository;version="[0
  .1,1)",org.motechproject.mmnaija.service;version="[0.1,1)",org.motech
- project.osgi.web;version="[0.25,1)",org.motechproject.server.config,o
- rg.slf4j;version="[1.7,2)",org.springframework.beans.factory.annotati
- on;version="[3.1,4)",org.springframework.http;version="[3.1,4)",org.s
- pringframework.stereotype;version="[3.1,4)",org.springframework.web.b
- ind.annotation;version="[3.1,4)"
+ project.osgi.web;version="[0.25,1)",org.motechproject.scheduler.contr
+ act;version="[0.25,1)",org.motechproject.scheduler.service;version="[
+ 0.25,1)",org.motechproject.server.config,org.slf4j;version="[1.7,2)",
+ org.springframework.beans.factory.annotation;version="[3.1,4)",org.sp
+ ringframework.http;version="[3.1,4)",org.springframework.stereotype;v
+ ersion="[3.1,4)",org.springframework.web.bind.annotation;version="[3.
+ 1,4)"
 

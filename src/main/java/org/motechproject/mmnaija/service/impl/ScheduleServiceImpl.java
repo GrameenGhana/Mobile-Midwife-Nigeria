@@ -53,6 +53,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Schedule create(Subscription subscription, Message msg, ScheduleStatus status) {
         return create(subscription, msg, status, "", "");
+    } @Override
+    public Schedule create(Subscription subscription, Message msg, ScheduleStatus status,String response) {
+        return create(subscription, msg, status, "", "", response);
     }
     
     public Schedule create(Subscription subscription, String msg, ScheduleStatus status) {
@@ -61,6 +64,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     
     @Override
     public Schedule create(Subscription subscription, Message msg, ScheduleStatus status, String callStatus, String callDuration) {
+       return create(subscription, msg, status, callStatus, callDuration, "");
+    }
+    
+    public Schedule create(Subscription subscription, Message msg, ScheduleStatus status, String callStatus, String callDuration,String response) {
         Schedule schedule = new Schedule();
         schedule.setSubscription(subscription);
         schedule.setSubscriber(subscription.getSubscriber());
@@ -69,6 +76,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setStatus(status);
         schedule.setCallStatus(callStatus);
         schedule.setCall_retry(callStatus);
+        schedule.setScheduleResponse(response);
         
         return add(schedule);
     }
@@ -121,8 +129,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> ivrShedules = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.V.toString()); 
         processIVRs(ivrShedules);
         
-//        List<Schedule> smsMessages = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.SMS.toString());
-//        processSMS(smsMessages);
+        List<Schedule> smsMessages = scheduleDataService.findByStatusAndChannel(ScheduleStatus.PENDING, Channel.SMS.toString());
+        processSMS(smsMessages);
     }
     
     public void processIVRs(List<Schedule> schedules) {
@@ -134,8 +142,9 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.setStatus(ScheduleStatus.PROCESSING);
                 schedule.setAttempts(schedule.getAttempts() + 1);
                 update(schedule);
+                Subscriber subscriber =  subscriptionService.findRecordByMsisdn(schedule.getSubscriber());
 //                Message msg = msgDataService.findByMessageKeyLanguageType(schedule.getMessage());
-                String response = HTTPCommunicator.sendVoice(schedule.getSubscriber(), schedule.getMessage());
+                String response = HTTPCommunicator.sendVoice(schedule.getSubscriber(), schedule.getMessage(),subscriber.getProvider());
                 if (response.equalsIgnoreCase("00")) {
                     schedule.setStatus(ScheduleStatus.SENT);
                 } else {
@@ -158,10 +167,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.setStatus(ScheduleStatus.PROCESSING);
                 schedule.setAttempts(schedule.getAttempts() + 1);
                 update(schedule);
+                Subscriber sub = subscriptionService.findRecordByMsisdn(schedule.getSubscriber());
                 
                 Message msg = msgDataService.findByMessageKeyLanguageType(schedule.getMessage());
-                String response = HTTPCommunicator.sendSMS(schedule, msg);
-                if (response.equalsIgnoreCase("00")) {
+                String response = HTTPCommunicator.sendSMS(schedule, msg,sub.getProvider());
+                if (response.startsWith("OK")) {
                     schedule.setStatus(ScheduleStatus.SENT);
                 } else {
                     //Just Testing
@@ -190,8 +200,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
     
     public Schedule playMessage(Subscription sub, Subscriber subscriber, MessageService msgService, String messageType) {
-        
-        Message msg = msgDataService.findByContentCurrentPositionLanguage(msgService.getContentId(), subscriber.getLanguage_id(), sub.getCurrentPoint(), messageType);
+     
+        String lang="1";
+        if(msgService.getChannel().equalsIgnoreCase("voice")){
+            lang= subscriber.getLanguage_id();
+        }
+        Message msg = msgDataService.findByContentCurrentPositionLanguage(msgService.getContentId(), lang, sub.getCurrentPoint(), messageType);
         Schedule sch = create(sub, msg, ScheduleStatus.PENDING);
         sub.setCurrentPoint(sub.getCurrentPoint() + 1);
         subscriptionService.updateSubscription(sub);

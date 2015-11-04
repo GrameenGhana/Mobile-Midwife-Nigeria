@@ -5,20 +5,31 @@
  */
 package org.motechproject.mmnaija.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.joda.time.LocalDate;
+import org.motechproject.event.MotechEvent;
 import org.motechproject.messagecampaign.contract.CampaignRequest;
 import org.motechproject.messagecampaign.dao.CampaignEnrollmentDataService;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollment;
 import org.motechproject.messagecampaign.domain.campaign.CampaignEnrollmentStatus;
 import org.motechproject.messagecampaign.service.MessageCampaignService;
+import org.motechproject.mmnaija.domain.Message;
 import org.motechproject.mmnaija.domain.MessageService;
 import org.motechproject.mmnaija.domain.Status;
 import org.motechproject.mmnaija.domain.Subscriber;
 import org.motechproject.mmnaija.domain.Subscription;
+import org.motechproject.mmnaija.repository.MessageDataService;
 import org.motechproject.mmnaija.repository.ServiceDataService;
 import org.motechproject.mmnaija.repository.SubscriptionDataService;
 import org.motechproject.mmnaija.service.SubscriberControllerService;
+import org.motechproject.mmnaija.service.SubscriberService;
+import org.motechproject.mmnaija.web.util.HTTPCommunicator;
+import org.motechproject.scheduler.contract.RunOnceSchedulableJob;
+import org.motechproject.scheduler.service.MotechSchedulerService;
+import org.motechproject.sms.SmsEventSubjects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +53,15 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     SubscriptionDataService subscriptionDataService;
     public static String Campaign_Nam = "";
 //    SMSService smsservice;
+    int NUMBER_OF_SMS_PER_WEEK = 5;
+
+    @Autowired
+    SubscriberService subscriberService;
+    @Autowired
+    MotechSchedulerService schedulerService;
+
+    @Autowired
+    MessageDataService messageDataService;
 
     @Override
     public boolean enrolSubscription(Subscription s) {
@@ -106,7 +126,7 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         enrolment = enrollmentService.findByExternalIdAndCampaignName(String.valueOf(sub.getMsisdn()), service.getSkey());
         if (null != enrolment) {
             System.out.println("Start Point");
-            start = service.getMinEntryPoint();
+            start = start * NUMBER_OF_SMS_PER_WEEK;
             System.out.println("End start point : " + start);
             Subscription subscription = new Subscription(sub, service, start, start, status, new Date(), enrolment);
             subscriptionDataService.create(subscription);
@@ -211,6 +231,7 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         }
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
         subscription.setStatus(Status.Active.toString());
+
         CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
         enroll.setStatus(CampaignEnrollmentStatus.ACTIVE);
         enrolSubscription(subscription);
@@ -245,4 +266,59 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         return null != enrollSubscriber(subscription, messageSer.getSkey(), new Date());
 
     }
+
+    public MotechEvent getMessage(String message, String recipient, String config) {
+        Map<String, Object> params = new HashMap();
+        params.put("message", message);
+        params.put("recipient", recipient);
+        params.put("config", config);
+
+        return new MotechEvent(SmsEventSubjects.SEND_SMS, params);
+//        return new MotechEvent("send_SMS_now", params);
+    }
+
+    public void subcriptionMessages(Subscriber subscriber, Subscription subscription) {
+        MotechEvent motechEvent = null;
+        Message msg = null;
+        String config = "mmnaijaSMS";
+        boolean isSMS = false;
+        //IVR Schedule for evening
+        if (subscription.getService() < 3) {
+            config = "mmnaijaIVR" ;//+ subscriber.getProvider();
+            msg = messageDataService.findByContentCurrentPositionLanguage(subscription.getService(), subscriber.getLanguage_id(), subscription.getCurrentPoint(), "voice");
+//            HTTPCommunicator.sendSMS(subscriber.getMsisdn(), msg.getContent(), subscriber.getProvider());
+        } else {
+            isSMS = true;
+            config+="_"+subscriber.getProvider();
+            msg = messageDataService.findByContentCurrentPositionLanguage(subscription.getService(), "1", subscription.getCurrentPoint(), "sms");
+//             HTTPCommunicator.sendSMS(subscriber.getMsisdn(), msg.getContent(), subscriber.getProvider());
+     
+        }
+        
+        motechEvent = getMessage(msg.getContent(), subscriber.getMsisdn(), config);
+        scheduleMessage(motechEvent, isSMS);
+        subscription.setCurrentPoint(subscription.getCurrentPoint() + 1);
+        subscriberService.updateSubscription(subscription);
+    }
+
+    public void scheduleMessage(MotechEvent motechEvent, boolean isSMS) {
+
+        Calendar calendar = Calendar.getInstance();
+        if (isSMS) {
+            if (calendar.get(Calendar.HOUR_OF_DAY) < 13) {
+                calendar.set(Calendar.HOUR_OF_DAY, 13);
+            } else {
+                calendar.add(Calendar.MINUTE, 4);
+            }
+        } else {
+            calendar.add(Calendar.MINUTE, 2);
+        }
+        Date sendTime = calendar.getTime();
+
+        //Now let' create our job
+        RunOnceSchedulableJob job = new RunOnceSchedulableJob(motechEvent, sendTime);
+
+        schedulerService.safeScheduleRunOnceJob(job);
+    }
+
 }

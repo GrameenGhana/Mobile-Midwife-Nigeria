@@ -12,6 +12,7 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
@@ -31,37 +32,49 @@ public class HTTPCommunicator {
 //    private SettingsFacade settingsFacade;
     private static final Logger log = LoggerFactory.getLogger(HTTPCommunicator.class);
 
-    public static String IVR_URL = "http://airtel1.v2nmobile.co.uk/mmarkHTTPCommunicatoret/GM_PLAY_FILE?msisdn=%s&callfile=%s.wav";
-    public static String SMS_URL = "http://83.138.190.168:8080/pls/vas2nets.inbox_pkg.schedule_sms?password=5C6739D81C1E3AFC5A859B27D2AA9CBC&"
-            + "username=dhutchful@grameenfoundation.org&sender=561&receiver=%s&message=%s&message_type=1";
+    public static String IVR_URL = " http://192.168.1.157:8000/pls/mmarket.api.GM_PLAY_FILE?msisdn=%s&callfile=%s.wav";
+    public static String IVR_URL_ETISALAT= "http://airtel1.v2nmobile.co.uk/mmarket/GM_PLAY_FILE?msisdn=%s&callfile=%s.wav";
+    public static String SMS_URL = "http://192.168.100.168:8080/pls/vas2nets.inbox_pkg.schedule_sms?password=A850717D6882A6342C59B007131CF2C6&"
+            + "username=skwakwa@grameenfoundation.org&sender=%s&receiver=%s&message=%s&message_type=0";
+    
+    
     public static String SUCCESSFUL_RESPONSE = "1";
 
-    public static String sendSMS(String msisdn, String message) {
-//        return (doGet(
-//                String.format(SMS_URL, msisdn, message)));
+    public static String sendSMS(String msisdn, String message,Long provider) {
+        String sender =(provider==1l)? "561":"32126";
+        String url = "";
+        try {
+                  url =  String.format(SMS_URL,sender, msisdn, URLEncoder.encode(message,"UTF-8"));
+
+        } catch (Exception e) {
+        }
+        return (doGet(url));
         //for the interim
-        return sendSimpleMail(msisdn, message, "SMS");
+//        return sendSimpleMail(msisdn, message, "SMS");
     }
 
-    public static String sendSMS(Schedule schedule, Message msg) {
-        return sendSMS(schedule.getSubscriber(), msg.getMessageKey());
+    public static String sendSMS(Schedule schedule, Message msg,Long provider) {
+        return sendSMS(schedule.getSubscriber(), msg.getMessageKey(),provider);
     }
 
-    public static String sendVoice(Schedule schedule, Message msg) {
-        return sendVoice(schedule.getSubscriber(), msg.getMessageKey());
+    public static String sendVoice(Schedule schedule, Message msg,Long provider) {
+        return sendVoice(schedule.getSubscriber(), msg.getMessageKey(),provider);
     }
 
-    public static String sendVoice(String msisdn, String messageKey) {
-//        return (doGet(
-//                String.format(IVR_URL, msisdn, messageKey)));
+    public static String sendVoice(String msisdn, String messageKey,Long provider) {
+        String url  = (provider==1)? IVR_URL : IVR_URL_ETISALAT;
+        return (doGet(
+                String.format(url, msisdn, messageKey)));
 
         //for the interim
-        return sendSimpleMail(msisdn, messageKey, "Voice");
+//        return sendSimpleMail(msisdn, messageKey, "Voice");
     }
 
     public static String doGet(String urlStr) {
         URLConnection connection = null;
         try {
+            log.info("url BEEN SENT  : "+urlStr);
+            System.out.println("Url to send : "+urlStr);
             URL url = new URL(urlStr);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             url = uri.toURL();
@@ -77,6 +90,7 @@ public class HTTPCommunicator {
             StringWriter writer = new StringWriter();
             IOUtils.copy(in, writer, "utf-8");
             String theString = writer.toString();
+            log.info("Respone : "+theString);
             return theString;
         } catch (Exception e) {
         }

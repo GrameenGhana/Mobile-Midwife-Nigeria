@@ -28,6 +28,7 @@
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/repository/ProviderDataService.java
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/domain/Schedule.java
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/service/SubscriberService.java
+/home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/web/util/SubscriptionScheduler.java
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/web/util/HTTPCommunicator.java
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/service/impl/SubscriptionServiceImpl.java
 /home/skwakwa/gf/motech-stuff/mmnigeria-server-motechmodule/src/main/java/org/motechproject/mmnaija/repository/LanguageDataService.java

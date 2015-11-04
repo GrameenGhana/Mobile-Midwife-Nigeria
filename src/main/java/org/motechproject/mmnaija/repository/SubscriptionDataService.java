@@ -44,10 +44,17 @@ public interface SubscriptionDataService extends MotechDataService<Subscription>
     @Lookup
      List<Subscription> findRecordByStatus(
             @LookupField(name = "status") String status
-    ); @Lookup
+    ); 
+     
+    @Lookup
      List<Subscription> findRecordByUser(
             @LookupField(name = "subscriber") String msisdn,
             @LookupField(name = "status") String status
+    );
+     
+    @Lookup
+    List<Subscription> findRecordByMsisdn(
+            @LookupField(name = "subscriber") String msisdn
     );
      
        @Lookup

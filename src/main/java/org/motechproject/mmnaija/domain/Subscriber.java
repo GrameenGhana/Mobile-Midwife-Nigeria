@@ -119,4 +119,18 @@ public class Subscriber extends MdsEntity implements Serializable {
         this.language_id = language_id;
     }
 
+    /**
+     * @return the provider
+     */
+    public Long getProvider() {
+        return provider;
+    }
+
+    /**
+     * @param provider the provider to set
+     */
+    public void setProvider(Long provider) {
+        this.provider = provider;
+    }
+
 }
