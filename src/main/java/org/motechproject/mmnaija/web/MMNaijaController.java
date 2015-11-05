@@ -233,8 +233,8 @@ public class MMNaijaController {
                 Subscriber subscriber = subscriberService.findRecordByMsisdn(regRequest.getMsidn());
                 System.out.println("Subscriber  register:" + subscriber);
 
-                 MessageService contentSMS = messageService.findServiceByContentId((regRequest.getService() + 2));
-                   MessageService content = messageService.findServiceByContentId((regRequest.getService()));
+                MessageService contentSMS = messageService.findServiceByContentId((regRequest.getService() + 2));
+                MessageService content = messageService.findServiceByContentId((regRequest.getService()));
 
 //        System.out.println("ID : "+subscriber.getMsisdn());
                 //Check of subscriber is already registered
@@ -242,10 +242,10 @@ public class MMNaijaController {
                     System.out.println("Subscripiton OK");
                     subscriber = subscriberService.createAndSubscribe(regRequest.getMsidn(), regRequest.getGender(), regRequest.getAge(), regRequest.getPregnant(), regRequest.getLanguage(), String.valueOf(regRequest.getService()), regRequest.getService(), regRequest.getProvider_id());
 
-                         Subscription s = subscriberService.findActiveSubscription(subscriber, contentSMS);
-                        if(null==s)
-                            sendMSg(contentSMS, subscriber, s);//contentSMS,s);
-                        
+                    Subscription s = subscriberService.findActiveSubscription(subscriber, contentSMS);
+                    if (null == s) {
+                        sendMSg(contentSMS, subscriber, s);//contentSMS,s);
+                    }
                     String responsive = (null == subscriber)
                             ? MMConstants.SUBSCRIBER_UNABLE_REGISTERD
                             : MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED;
@@ -257,25 +257,31 @@ public class MMNaijaController {
                 } else {
                     System.out.println("Subscripiton NOT OK");
 
-                   
 //                    MessageService contentSMS = messageService.findServiceByContentId((regRequest.getService() + 2));
-
 //                    String response = HTTPCommunicator.sendSMS(subscriber.getMsisdn(), contentSMS., subscriber.getProvider());
-                   
                     //Check for existing subscriptions
                     Subscription subscription = subscriberService.findSubscription(subscriber, contentSMS);
+                    Subscription subscriptionIvr = subscriberService.findSubscription(subscriber, content);
                     //not subscribed
                     if (null == subscription) {
+                        System.out.println("No Active Subscription");
                         //add subscription
                         subscriberService.subscribeUser(subscriber, String.valueOf(regRequest.getService()), regRequest.getStart_point());
+                        System.out.println("Just created new ");
                         Subscription s = subscriberService.findActiveSubscription(subscriber, contentSMS);
-                        if(null==s)
+                        Subscription sr = subscriberService.findActiveSubscription(subscriber, content);
+                        if (null != s) {
                             sendMSg(contentSMS, subscriber, s);
+                            s.setCurrentPoint(s.getCurrentPoint() + 1);
+                            sr.setCurrentPoint(sr.getCurrentPoint() + 1);
+                            subscriberService.updateSubscription(s);
+                            subscriberService.updateSubscription(sr);
+                        }
+
 //                        subscriberService.subscribeUser(subscriber, String.valueOf(regRequest.getService()), regRequest.getStart_point());
 //                    return ()
 //                            ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
 //                            : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
-
                     } else {
                         System.out.println("Subscripiton Already OK");
 
@@ -283,14 +289,30 @@ public class MMNaijaController {
                             //already subscribed
 //                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIPTION_ALREADY_EXIST);
                         }
-                        if (subscription.getStatus().equals(Status.Paused)) {
+                        if (subscription.getStatus().equals(Status.Paused.name())) {
+                            System.out.println("Paused");
                             subscriberService.resumeSubscribeUser(subscription);
-                          
+                            subscriberService.resumeSubscribeUser(subscriptionIvr);
+
+                            subscription.setCurrentPoint(subscription.getCurrentPoint() + 1);
+                            subscriptionIvr.setCurrentPoint(subscriptionIvr.getCurrentPoint() + 1);
+                            subscriberService.updateSubscription(subscription);
+                            subscriberService.updateSubscription(subscriptionIvr);
+
                             sendMSg(contentSMS, subscriber, subscription);
 //                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_SUCCESSFUL);
-                        } else if (subscription.getStatus().equals(Status.InActive)) {
+                        } else if (subscription.getStatus().equals(Status.InActive.name())) {
+                            System.out.println("Inactive");
                             subscriberService.reactivateSubscribe(subscription);
-                             sendMSg(contentSMS, subscriber, subscription);
+                            subscriberService.reactivateSubscribe(subscriptionIvr);
+                            System.out.println("After Inactive sending");
+
+                            subscription.setCurrentPoint(subscription.getCurrentPoint() + 1);
+                            subscriptionIvr.setCurrentPoint(subscriptionIvr.getCurrentPoint() + 1);
+                            subscriberService.updateSubscription(subscription);
+                            subscriberService.updateSubscription(subscriptionIvr);
+
+                            sendMSg(contentSMS, subscriber, subscription);
 //                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.REACTIVATION_SUCCESSFUL);
                         } else {
 //                        return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
@@ -429,15 +451,14 @@ public class MMNaijaController {
             if (null == subscription) {
                 //add subscription
                 if (subscriberService.subscribeUser(subscriber, campaign, start)) {
-                    
-                
-                return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
-            } else {
 
-                Subscription subscription1 = subscriberService.findSubscription(subscriber, content);
-                sendMSg(content, subscriber, subscription1);
-                return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
-            }
+                    return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
+                } else {
+
+                    Subscription subscription1 = subscriberService.findSubscription(subscriber, content);
+                    sendMSg(content, subscriber, subscription1);
+                    return MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
+                }
 //                    
 //                     ? MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD)
 //                            : MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.SUBSCRIBER_SUCCESSFULLY_REGISTERED);
@@ -456,10 +477,10 @@ public class MMNaijaController {
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.RESUME_SUCCESSFUL);
                 } else if (subscription.getStatus().equals(Status.InActive)) {
                     subscriberService.reactivateSubscribe(subscription);
-                     sendMSg(content, subscriber, subscription);
+                    sendMSg(content, subscriber, subscription);
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.REACTIVATION_SUCCESSFUL);
                 } else {
-                    
+
                     return MMNaijaUtil.getDefaultResponseMessage(true, MMConstants.SUBSCRIBER_UNABLE_REGISTERD);
                 }
 
@@ -469,24 +490,28 @@ public class MMNaijaController {
     }
 
     public void sendMSg(MessageService content, Subscriber subscriber, Subscription sub) {
+        System.out.println("Send sms");
         Message msg = msgDataService.findByContentCurrentPositionLanguage(content.getContentId(), "1", sub.getCurrentPoint(), "sms");
+
+        System.out.println("Send Sub " + subscriber.getMsisdn());
 
         Schedule s = null;
         try {
             s = scheduleService.create(sub, msg, ScheduleStatus.PROCESSING, "");
         } catch (Exception e) {
+            System.out.println("Exception kr : " + e.getLocalizedMessage());
         }
+        System.out.println("Send Sub Scheduer : " + s);
 
-       
         try {
 
-             String response = HTTPCommunicator.sendSMS(subscriber.getMsisdn(), msg.getContent(), subscriber.getProvider());
+            String response = HTTPCommunicator.sendSMS(subscriber.getMsisdn(), msg.getContent(), subscriber.getProvider());
 
-        System.out.println("===============================================");
+            System.out.println("===============================================");
 //                System.out.println("Config   : " + config);
-        System.out.println("Message  : " + msg.getContent());
-        System.out.println("Recipient: " + subscriber.getMsisdn());
-        System.out.println("================================================");
+            System.out.println("Message  : " + msg.getContent());
+            System.out.println("Recipient: " + subscriber.getMsisdn());
+            System.out.println("================================================");
             ScheduleStatus st = ScheduleStatus.FAILED;
             if (response.isEmpty()) {
 
@@ -551,7 +576,10 @@ public class MMNaijaController {
                 System.out.println("Unsubscribing : " + msisdn);
 
                 List<Subscription> subscriptions = subscriberService.findByStatusByUser(msisdn);
+
+                System.out.println("Unsub Count : " + subscriptions.size());
                 for (Subscription subscription : subscriptions) {
+                    System.out.println("unSUb 1; " + subscription.getService());
                     if (subscriberService.unsubscribeUser(subscription)) {
                         MMNaijaUtil.getDefaultResponseMessage(false, MMConstants.UNSUBSCRIPTION_SUCCESSFUL);
                     } else {

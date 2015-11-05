@@ -232,8 +232,8 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
         subscription.setStatus(Status.Active.toString());
 
-        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
-        enroll.setStatus(CampaignEnrollmentStatus.ACTIVE);
+//        CampaignEnrollment enroll = enrollmentService.findById(Long.parseLong(subscription.getEnrollment()));
+//        enroll.setStatus(CampaignEnrollmentStatus.ACTIVE);
         enrolSubscription(subscription);
 //        enrollmentService.update(enroll);
         subscriptionDataService.update(subscription);
@@ -261,6 +261,9 @@ public class SubscriberControllerServerImpl implements SubscriberControllerServi
     @Override
     public boolean reactivateSubscription(Subscription subscription) {
 
+        subscription.setStatus(Status.Active.name());
+        subscriptionDataService.update(subscription);
+        
         MessageService messageSer = serviceDataService.findServiceByContentId(subscription.getService());
 
         return null != enrollSubscriber(subscription, messageSer.getSkey(), new Date());
